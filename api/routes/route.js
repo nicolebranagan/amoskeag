@@ -1,6 +1,7 @@
 'use strict';
 module.exports = function(app) {
-  const controller = require('../controllers/controller');
+  const userController = require('../controllers/userController');
+  const gameController = require('../controllers/gameController');
 
   app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -10,22 +11,22 @@ module.exports = function(app) {
 
   // test routes
   app.route('/saves/')
-    .get(controller.read_all)
-    .delete(controller.delete_all);
+    .get(userController.read_all)
+    .delete(userController.delete_all);
   
   app.route('/saves/new')
-    .get(controller.create);
+    .get(userController.create);
 
   app.route('/saves/:userId')
-    .get(controller.read)
-    .delete(controller.delete);
+    .get(userController.read)
+    .delete(userController.delete);
 
   app.route('/:userId/look')
-    .get(controller.look)
+    .get(gameController.look)
 
   app.route('/:userId/move')
-    .post(controller.move)
+    .post(gameController.move)
 
   app.route('/:userId/talk')
-    .post(controller.talk)
+    .post(gameController.talk)
 };
