@@ -11,9 +11,12 @@ const SaveSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  room: {
-    type: Number,
-    default: 0
+  state: 
+  {
+    room: {
+      type: Number,
+      default: 0
+    }
   }
 });
 

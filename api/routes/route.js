@@ -13,4 +13,10 @@ module.exports = function(app) {
   app.route('/saves/:userId')
     .get(controller.read)
     .delete(controller.delete);
+
+  app.route('/:userId/look')
+    .get(controller.look)
+
+  app.route('/:userId/move')
+    .post(controller.move)
 };

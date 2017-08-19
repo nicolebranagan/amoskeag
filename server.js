@@ -3,7 +3,7 @@ const express = require('express'),
   app = express(),
   port = process.env.PORT || 9999,
   mongoose = require('mongoose'),
-  Save = require('./api/models/model'),
+  Save = require('./api/schema/saveSchema'),
   bodyParser = require('body-parser');
 
 // mongoose instance connection url connection

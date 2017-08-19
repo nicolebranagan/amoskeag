@@ -3,6 +3,7 @@
 const mongoose = require('mongoose'),
   Save = mongoose.model('Saves');
 const uuidv4 = require('uuid/v4');
+const game = require('../../game/game');
 
 exports.read_all = function(req, res) {
   Save.find({}, function(err, saves) {
@@ -17,7 +18,7 @@ exports.read_all = function(req, res) {
         last_date: save.last_date
       })
     }
-    res.json(output);
+    res.json(saves);
   });
 };
 
@@ -79,3 +80,66 @@ exports.delete = function(req, res) {
       res.json({ message: 'Successfully deleted', success: true});
   });
 };
+
+async function getUser(id) {
+  const user = await Save.findOne({id: id});
+  if (user == null)
+    throw "No such user."
+  return user.state;
+}
+
+function takeAction(id, res, action) {
+  const user = getUser(id).then(
+    function(user) {
+      if (user == null) {
+        res.json({ message: 'No such user', success: false })
+        return;
+      }
+      const see = action(user);
+      if (see.update)
+        update(id, see.update)
+          .then(() => {;})
+          .catch((err) => {throw err;});
+      res.json(
+        {
+          output: see.output,
+          success: true
+        }
+      )
+  })
+  .catch(
+    function(err) {
+      res.json({ message: err, success: false });
+    }
+  );
+}
+
+async function update(id, update) {
+  const user = await Save.findOne({id: id});
+  if (user == null)
+    throw "No such user."
+  if ("room" in update)
+    user.state.room = update.room;
+  console.log(update)
+  await user.save();
+} 
+
+exports.look = function(req, res) {
+  takeAction(req.params.userId, res,
+    (user) => game.look(user)
+  )
+};
+
+exports.move = function(req, res) {
+  if (!req.body.exit)
+    res.json(
+      {
+        message: "Where are you moving to?",
+        success: false,
+      }
+    );
+  else
+    takeAction(req.params.userId, res,
+      (user) => game.move(user, req.body.exit)
+    )
+}

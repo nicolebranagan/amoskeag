@@ -1,0 +1,16 @@
+{
+  "rooms" : [
+    {
+      "desc" : "You are in a plain void. You can't comprehend what the world is like.",
+      "exits" : {
+        "NORTH": 1
+      }
+    },
+    {
+      "desc" : "You're in another room. This one is just as incomprehensible, but calming.",
+      "exits" : {
+        "SOUTH" : 0
+      }
+    }
+  ]
+}
