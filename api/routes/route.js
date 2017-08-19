@@ -19,4 +19,7 @@ module.exports = function(app) {
 
   app.route('/:userId/move')
     .post(controller.move)
+
+  app.route('/:userId/talk')
+    .post(controller.talk)
 };

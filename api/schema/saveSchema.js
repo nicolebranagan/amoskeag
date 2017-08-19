@@ -13,10 +13,22 @@ const SaveSchema = new Schema({
   },
   state: 
   {
-    room: {
-      type: Number,
-      default: 0
-    }
+    player: {
+      room: {
+        type: Number,
+        default: 0
+      }
+    },
+    npc: [
+      {
+        id: {
+          type: String
+        },
+        room: {
+          type: Number
+        }
+      }
+    ]
   }
 });
 

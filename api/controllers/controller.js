@@ -39,6 +39,8 @@ exports.create = function(req, res) {
       res.send(err);
       return;
     }
+    save.state = game.initialState();
+    save.save();
     res.json({
       id: save.id,
       success: true,
@@ -109,7 +111,7 @@ function takeAction(id, res, action) {
   })
   .catch(
     function(err) {
-      res.json({ message: err, success: false });
+      res.json({ message: err.toString(), success: false });
     }
   );
 }
@@ -118,9 +120,12 @@ async function update(id, update) {
   const user = await Save.findOne({id: id});
   if (user == null)
     throw "No such user."
-  if ("room" in update)
-    user.state.room = update.room;
-  console.log(update)
+  console.log(user.state.player.room)
+  if ("player" in update) {
+    if ("room" in update.player)
+      user.state.player.room = update.player.room;
+  }
+  user.last_date = Date.now();
   await user.save();
 } 
 
@@ -141,5 +146,19 @@ exports.move = function(req, res) {
   else
     takeAction(req.params.userId, res,
       (user) => game.move(user, req.body.exit)
+    )
+}
+
+exports.talk = function(req, res) {
+  if (!req.body.talk)
+    res.json(
+      {
+        message: "Who are you talking to?",
+        success: false,
+      }
+    );
+  else
+    takeAction(req.params.userId, res,
+      (user) => game.talk(user, req.body.talk)
     )
 }

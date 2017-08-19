@@ -12,5 +12,20 @@
         "SOUTH" : 0
       }
     }
+  ],
+  "npc" : [
+    {
+      "desc" : "a man",
+      "dialogue" : "howdy",
+      "initial" : {
+        "room" : 1
+      }
+    },
+    {
+      "desc" : "a denizen of the void",
+      "initial" : {
+        "room" : 7
+      }
+    }
   ]
 }
