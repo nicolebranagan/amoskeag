@@ -1,0 +1,24 @@
+{
+  "name": "amoskeag",
+  "version": "0.0.0",
+  "description": "Server for text adventure games",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": ".git"
+  },
+  "author": "Nicole Caroline Branagan",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "mongoose": "^4.11.7"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
