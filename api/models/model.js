@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let SaveSchema = new Schema({
+const SaveSchema = new Schema({
   id: {
     type: String,
     required: 'Please create a user ID'

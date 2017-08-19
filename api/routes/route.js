@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function(app) {
-  let controller = require('../controllers/controller');
+  const controller = require('../controllers/controller');
 
   // test routes
   app.route('/saves/')

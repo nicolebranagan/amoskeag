@@ -1,5 +1,5 @@
 'use strict';
-let express = require('express'),
+const express = require('express'),
   app = express(),
   port = process.env.PORT || 9999,
   mongoose = require('mongoose'),
@@ -13,7 +13,7 @@ mongoose.connect('mongodb://localhost/Amoskeagdb');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-let routes = require('./api/routes/route'); //importing route
+const routes = require('./api/routes/route'); //importing route
 routes(app); //register the route
 
 app.listen(port);

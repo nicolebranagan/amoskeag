@@ -11,7 +11,7 @@ exports.read_all = function(req, res) {
         return;
     }
     const output = {saves: [], success: true};
-    for (let save of saves) {
+    for (const save of saves) {
       output.saves.push({
         id: save.id,
         last_date: save.last_date
