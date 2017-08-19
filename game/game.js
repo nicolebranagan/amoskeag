@@ -41,7 +41,7 @@ exports.look = function(state) {
     output: {
       desc: room.desc + helper.npcString(npc.map(e => e.desc)),
       exit: exits,
-      talk: npc.map(e => e.id)
+      talk: npc.map(e => [e.desc, e.id])
     }
   }
 }

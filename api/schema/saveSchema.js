@@ -4,8 +4,7 @@ const Schema = mongoose.Schema;
 
 const SaveSchema = new Schema({
   id: {
-    type: String,
-    required: 'Please create a user ID'
+    type: String
   },
   last_date: {
     type: Date,

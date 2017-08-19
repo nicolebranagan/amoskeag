@@ -11,14 +11,14 @@ exports.read_all = function(req, res) {
         res.send(err);
         return;
     }
-    const output = {saves: [], success: true};
+    const output = {saves: [], length: saves.length, success: true};
     for (const save of saves) {
       output.saves.push({
         id: save.id,
         last_date: save.last_date
       })
     }
-    res.json(saves);
+    res.json(output);
   });
 };
 

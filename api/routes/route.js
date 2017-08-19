@@ -2,6 +2,12 @@
 module.exports = function(app) {
   const controller = require('../controllers/controller');
 
+  app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+
   // test routes
   app.route('/saves/')
     .get(controller.read_all)
