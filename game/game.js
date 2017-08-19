@@ -1,6 +1,6 @@
 'use strict';
 
-const worldfile = require("./data/worldfile");
+const worldfile = require("../data/worldfile");
 const helper = require("./helper");
 const uuidv4 = require('uuid/v4');
 

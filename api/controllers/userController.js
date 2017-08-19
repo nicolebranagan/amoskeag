@@ -8,7 +8,7 @@ const game = require('../../game/game');
 exports.read_all = function(req, res) {
   Save.find({}, function(err, saves) {
     if (err) {
-        res.send(err);
+      res.json({message: err.toString(), success: false})
         return;
     }
     res.json({
@@ -25,7 +25,7 @@ exports.read_all = function(req, res) {
 exports.delete_all = function(req, res) {
   Save.remove({}, function(err, save) {
     if (err) {
-        res.send(err);
+        res.json({message: err.toString(), success: false})
         return;
     }
     res.json({success: true});
@@ -36,7 +36,7 @@ exports.create = function(req, res) {
   const new_game = new Save({id: uuidv4()});
   new_game.save(function(err, save) {
     if (err) {
-      res.send(err);
+      res.json({message: err.toString(), success: false})
       return;
     }
     save.state = game.initialState();
@@ -54,7 +54,7 @@ exports.read = function(req, res) {
     {last_date: Date.now()}, 
     function(err, save) {
       if (err) {
-        res.send(err);
+        res.json({message: err.toString(), success: false})
         return;
       }
       if (save == null)
@@ -73,7 +73,7 @@ exports.delete = function(req, res) {
     id: req.params.userId
   }, function(err, save) {
     if (err) {
-      res.send(err);
+      res.json({message: err.toString(), success: false})
       return;
     }
     if (save.result.n == 0)

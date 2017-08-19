@@ -14,9 +14,10 @@ async function getUser(id) {
 
 async function update(id, update) {
   const user = await Save.findOne({id: id});
+  if (!update)
+    return;
   if (user == null)
     throw "No such user."
-  console.log(user.state.player.room)
   if ("player" in update) {
     if ("room" in update.player)
       user.state.player.room = update.player.room;
@@ -26,17 +27,18 @@ async function update(id, update) {
 } 
 
 function takeAction(id, res, action) {
-  const user = getUser(id).then(
+  let see;
+  getUser(id).then(
     function(user) {
       if (user == null) {
         res.json({ message: 'No such user', success: false })
         return;
       }
-      const see = action(user);
-      if (see.update)
-        update(id, see.update)
-          .then(() => {;})
-          .catch((err) => {throw err;});
+      see = action(user);
+      update(id, see.update)
+  })
+  .then(
+    function(user) {
       res.json(
         {
           output: see.output,
