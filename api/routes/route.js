@@ -3,12 +3,11 @@ module.exports = function(app) {
   let controller = require('../controllers/controller');
 
   // test routes
-  app.route('/')
+  app.route('/saves/')
     .get(controller.read_all)
     .post(controller.create);
 
-
-  //app.route('/:userId')
-  //  .get(controller.read_save)
-  //  .delete(controller.delete);
+  app.route('/saves/:userId')
+    .get(controller.read)
+    .delete(controller.delete);
 };
