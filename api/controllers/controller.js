@@ -1,22 +1,47 @@
 'use strict';
 
-let mongoose = require('mongoose'),
+const mongoose = require('mongoose'),
   Save = mongoose.model('Saves');
+const uuidv4 = require('uuid/v4');
 
 exports.read_all = function(req, res) {
-  Save.find({}, function(err, save) {
-    if (err)
+  Save.find({}, function(err, saves) {
+    if (err) {
         res.send(err);
-    res.json(save);
+        return;
+    }
+    const output = {saves: [], success: true};
+    for (let save of saves) {
+      output.saves.push({
+        id: save.id,
+        last_date: save.last_date
+      })
+    }
+    res.json(output);
+  });
+};
+
+exports.delete_all = function(req, res) {
+  Save.remove({}, function(err, save) {
+    if (err) {
+        res.send(err);
+        return;
+    }
+    res.json({success: true});
   });
 };
 
 exports.create = function(req, res) {
-  let new_game = new Save(req.body);
+  const new_game = new Save({id: uuidv4()});
   new_game.save(function(err, save) {
-    if (err)
+    if (err) {
       res.send(err);
-    res.json(save);
+      return;
+    }
+    res.json({
+      id: save.id,
+      success: true,
+    });
   });
 };
 
@@ -25,8 +50,10 @@ exports.read = function(req, res) {
     {id: req.params.userId},
     {last_date: Date.now()}, 
     function(err, save) {
-      if (err)
+      if (err) {
         res.send(err);
+        return;
+      }
       if (save == null)
         res.json({ message: 'No such user', success: false })
       else
@@ -42,8 +69,10 @@ exports.delete = function(req, res) {
   Save.remove({
     id: req.params.userId
   }, function(err, save) {
-    if (err)
+    if (err) {
       res.send(err);
+      return;
+    }
     if (save.result.n == 0)
       res.json({ message: 'No such user', success: false })
     else

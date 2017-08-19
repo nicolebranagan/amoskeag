@@ -5,7 +5,10 @@ module.exports = function(app) {
   // test routes
   app.route('/saves/')
     .get(controller.read_all)
-    .post(controller.create);
+    .delete(controller.delete_all);
+  
+  app.route('/saves/new')
+    .get(controller.create);
 
   app.route('/saves/:userId')
     .get(controller.read)
