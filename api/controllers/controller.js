@@ -21,27 +21,32 @@ exports.create = function(req, res) {
 };
 
 exports.read = function(req, res) {
-  Save.findOne({id: req.params.userId}, function(err, task) {
-    if (err)
-      res.send(err);
-    res.json(task);
-  });
-};
-
-exports.update = function(req, res) {
-  Save.findOneAndUpdate({id: req.params.userId}, req.body, {new: true}, function(err, task) {
-    if (err)
-      res.send(err);
-    res.json(task);
+  Save.findOneAndUpdate(
+    {id: req.params.userId},
+    {last_date: Date.now()}, 
+    function(err, save) {
+      if (err)
+        res.send(err);
+      if (save == null)
+        res.json({ message: 'No such user', success: false })
+      else
+        res.json({
+          id: save.id,
+          last_date: save.last_date,
+          success: true
+      });
   });
 };
 
 exports.delete = function(req, res) {
   Save.remove({
     id: req.params.userId
-  }, function(err, task) {
+  }, function(err, save) {
     if (err)
       res.send(err);
-    res.json({ message: 'Successfully deleted' });
+    if (save.result.n == 0)
+      res.json({ message: 'No such user', success: false })
+    else
+      res.json({ message: 'Successfully deleted', success: true});
   });
 };
