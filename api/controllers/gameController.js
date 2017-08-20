@@ -52,7 +52,7 @@ function takeAction(id, res, action) {
   })
   .catch(
     function(err) {
-      res.json({ message: err.toString(), success: false });
+      res.status(500).json({ message: err.toString(), success: false });
     }
   );
 }
@@ -65,7 +65,7 @@ exports.look = function(req, res) {
 
 exports.move = function(req, res) {
   if (!req.body.exit)
-    res.json(
+    res.status(422).json(
       {
         message: "Where are you moving to?",
         success: false,
@@ -79,7 +79,7 @@ exports.move = function(req, res) {
 
 exports.talk = function(req, res) {
   if (!req.body.talk)
-    res.json(
+    res.status(422).json(
       {
         message: "Who are you talking to?",
         success: false,

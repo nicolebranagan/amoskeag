@@ -6,6 +6,7 @@ module.exports = function(app) {
   app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.removeHeader("X-Powered-By");
     next();
   });
 
@@ -29,4 +30,11 @@ module.exports = function(app) {
 
   app.route('/:userId/talk')
     .post(gameController.talk)
+
+  app.all('*', function(req, res) {
+    res.status(404).json({
+      message: "Bad command or file name.",
+      success: false
+    });
+  });
 };
