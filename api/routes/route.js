@@ -1,7 +1,9 @@
 'use strict';
 module.exports = function(app) {
   const userController = require('../controllers/userController');
+  const saveController = require('../controllers/saveController');
   const gameController = require('../controllers/gameController');
+  const auth = require("../auth/jwt-auth")();
 
   app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -11,24 +13,41 @@ module.exports = function(app) {
   });
 
   // test routes
-  app.route('/saves/')
+  app.route('/users/')
     .get(userController.read_all)
     .delete(userController.delete_all);
   
+  app.route('/users/new')
+    .post(userController.create);
+
+  app.route('/users/token')
+    .post(userController.get_token);
+
+  app.get("/users/save", auth.authenticate(), function(req, res) {  
+      res.json(req.user);
+  });
+
+  // test routes
+  app.route('/saves/')
+    .get(saveController.read_all)
+    .delete(saveController.delete_all);
+  
   app.route('/saves/new')
-    .get(userController.create);
+    .get(saveController.create);
 
   app.route('/saves/:userId')
-    .get(userController.read)
-    .delete(userController.delete);
+    .get(saveController.read)
+    .delete(saveController.delete);
 
-  app.route('/:userId/look')
+  app.use('/game/*', auth.authenticate());
+
+  app.route('/game/look')
     .get(gameController.look)
 
-  app.route('/:userId/move')
+  app.route('/game/move')
     .post(gameController.move)
 
-  app.route('/:userId/talk')
+  app.route('/game/talk')
     .post(gameController.talk)
 
   app.all('*', function(req, res) {

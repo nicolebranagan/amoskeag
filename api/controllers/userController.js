@@ -1,29 +1,83 @@
 'use strict';
 
 const mongoose = require('mongoose'),
+  User = mongoose.model('Users'),
   Save = mongoose.model('Saves');
 const uuidv4 = require('uuid/v4');
+const jwt = require("jwt-simple");
+const cfg = require('../../config');
 const game = require('../../game/game');
+const bcrypt = require('bcrypt');
+
+exports.get_token = function(req, res) {  
+  if (!(req.body.username && req.body.password))
+    res.status(401).json({success: false});
+  const name = req.body.username;
+  const password = req.body.password;
+  let user;
+  User.findOne({name: name})
+  .then(
+    function(found) {
+      if (!found) {
+        res.status(401).json(
+          {
+            message: "No such user or password",
+            success: false
+          }
+        )
+        return;
+      }
+      user = found;
+      return bcrypt.compare(password, user.password)
+    }
+  )
+  .then(
+    function(same) {
+      if (same) {
+        var payload = {
+          save: user.save_id
+        };
+        var token = jwt.encode(payload, cfg.jwtSecret);
+        res.json({
+            token: token,
+            success: true
+        });
+      } else {
+        res.status(401).json(
+          {
+            message: "No such user or password",
+            success: false
+          }
+        )
+      }
+  })
+  .catch(
+    function(err) {
+      res.status(401).json({ message: err.toString(), success: false });
+    }
+  );
+}
 
 exports.read_all = function(req, res) {
-  Save.find({}, function(err, saves) {
+  User.find({}, function(err, users) {
     if (err) {
       res.json({message: err.toString(), success: false})
         return;
     }
     res.json({
-      saves: saves.map((e) => { return {
-        id: e.id,
-        last_date: e.last_date
+      users: users.map((e) => { return {
+        username: e.name,
+        password: e.password,
+        save_id: e.save_d
       }}), 
-      length: saves.length, 
+      length: users.length, 
       success: true
     });
   });
 };
 
 exports.delete_all = function(req, res) {
-  Save.remove({}, function(err, save) {
+  User.remove({}, function(err, save) {
     if (err) {
         res.json({message: err.toString(), success: false})
         return;
@@ -33,52 +87,44 @@ exports.delete_all = function(req, res) {
 };
 
 exports.create = function(req, res) {
-  const new_game = new Save({id: uuidv4()});
-  new_game.save(function(err, save) {
-    if (err) {
-      res.json({message: err.toString(), success: false})
-      return;
-    }
-    save.state = game.initialState();
-    save.save();
-    res.json({
-      id: save.id,
-      success: true,
+  if (!(req.body.username && req.body.password))
+    res.status(422).json({
+      message: "Please provide a username and password",
+      success: false
     });
-  });
-};
-
-exports.read = function(req, res) {
-  Save.findOneAndUpdate(
-    {id: req.params.userId},
-    {last_date: Date.now()}, 
-    function(err, save) {
-      if (err) {
-        res.json({message: err.toString(), success: false})
-        return;
-      }
-      if (save == null)
-        res.json({ message: 'No such user', success: false })
-      else
+  const name = req.body.username;
+  const password = req.body.password;
+  console.log(password)
+  const save_id = uuidv4();
+  bcrypt.hash(password, 10)
+  .then(
+    function(hash) {
+      console.log(hash)
+      const new_user = new User({
+        name: name,
+        password: hash,
+        save_id: save_id
+    })
+    return new_user.save();
+  })
+  .then(
+    function() {
+      const new_game = new Save({id: save_id});
+      new_game.save(function(err, save) {
+        if (err) {
+          res.json({message: err.toString(), success: false})
+          return;
+        }
+        save.state = game.initialState();
+        save.save();
         res.json({
-          id: save.id,
-          last_date: save.last_date,
-          success: true
+          success: true,
+        });
       });
-  });
-};
-
-exports.delete = function(req, res) {
-  Save.remove({
-    id: req.params.userId
-  }, function(err, save) {
-    if (err) {
-      res.json({message: err.toString(), success: false})
-      return;
+  })
+  .catch(
+    function(err) {
+      res.status(401).json({ message: err.toString(), success: false });
     }
-    if (save.result.n == 0)
-      res.json({ message: 'No such user', success: false })
-    else
-      res.json({ message: 'Successfully deleted', success: true});
-  });
+  );
 };

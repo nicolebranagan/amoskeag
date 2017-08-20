@@ -58,7 +58,7 @@ function takeAction(id, res, action) {
 }
 
 exports.look = function(req, res) {
-  takeAction(req.params.userId, res,
+  takeAction(req.user.save, res,
     (state) => game.look(state)
   )
 };
@@ -72,7 +72,7 @@ exports.move = function(req, res) {
       }
     );
   else
-    takeAction(req.params.userId, res,
+    takeAction(req.user.save, res,
       (state) => game.move(state, req.body.exit)
     )
 }
@@ -86,7 +86,7 @@ exports.talk = function(req, res) {
       }
     );
   else
-    takeAction(req.params.userId, res,
+    takeAction(req.user.save, res,
       (state) => game.talk(state, req.body.talk)
     )
 }

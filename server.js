@@ -4,6 +4,7 @@ const express = require('express'),
   port = process.env.PORT || 9999,
   mongoose = require('mongoose'),
   Save = require('./api/schema/saveSchema'),
+  User = require('./api/schema/userSchema'),
   bodyParser = require('body-parser');
 
 // mongoose instance connection url connection
