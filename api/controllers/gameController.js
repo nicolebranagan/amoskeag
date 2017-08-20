@@ -78,7 +78,7 @@ exports.move = function(req, res) {
 }
 
 exports.talk = function(req, res) {
-  if (!req.body.talk)
+  if (!req.params.talkId)
     res.status(422).json(
       {
         message: "Who are you talking to?",
@@ -87,6 +87,6 @@ exports.talk = function(req, res) {
     );
   else
     takeAction(req.user.save, res,
-      (state) => game.talk(state, req.body.talk)
+      (state) => game.talk(state, req.params.talkId)
     )
 }

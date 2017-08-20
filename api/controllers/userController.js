@@ -9,26 +9,31 @@ const cfg = require('../../config');
 const game = require('../game/game');
 const bcrypt = require('bcrypt');
 
+function new_game(id) {
+  game.initialState()
+  .then(function(state) {
+    const new_game = new Save({
+      id: id,
+      state: state
+    });
+    return new_game.save()
+  })
+  .then(
+    () => {}
+  )
+}
+
 exports.get_anonymous_token = function(req, res) {
   const save_id = uuidv4();
-  const new_game = new Save({id: save_id});
-  new_game.save(function(err, save) {
-    if (err) {
-      res.json({message: err.toString(), success: false})
-      return;
-    }
-    save.state = game.initialState();
-    save.save();
-    const payload = {
-      save: save_id
-    };
-    const token = jwt.encode(payload, cfg.jwtSecret);
-    res.json({
-        token: token,
-        anonymous: true,
-        success: true
-    });
-
+  new_game(save_id);
+  const payload = {
+    save: save_id
+  };
+  const token = jwt.encode(payload, cfg.jwtSecret);
+  res.json({
+      token: token,
+      anonymous: true,
+      success: true
   });
 }
 
@@ -119,6 +124,7 @@ exports.create = function(req, res) {
   const name = req.body.username;
   const password = req.body.password;
   const save_id = uuidv4();
+  new_game(save_id);
   bcrypt.hash(password, 10)
   .then(
     function(hash) {
@@ -131,19 +137,9 @@ exports.create = function(req, res) {
   })
   .then(
     function() {
-      const new_game = new Save({id: save_id});
-      new_game.save(function(err, save) {
-        if (err) {
-          res.json({message: err.toString(), success: false})
-          return;
-        }
-        save.state = game.initialState();
-        save.save();
-        res.json({
-          success: true,
-        });
-      });
-  })
+      res.json({success: true})
+    }
+  )
   .catch(
     function(err) {
       res.status(401).json({ message: err.toString(), success: false });

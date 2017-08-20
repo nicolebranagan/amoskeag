@@ -17,9 +17,9 @@
     {
       "label" : "a man",
       "desc" : "It's hard to tell if they're really a man, or something else. Perhaps they don't exist at all.",
-      "dialogue" : "howdy",
+      "dialogue" : 0,
       "initial" : {
-        "room" : 1
+        "room" : 0
       }
     },
     {
@@ -27,6 +27,11 @@
       "initial" : {
         "room" : 7
       }
+    }
+  ],
+  "dialogue" : [
+    {
+      "text" : "Howdy"
     }
   ]
 }

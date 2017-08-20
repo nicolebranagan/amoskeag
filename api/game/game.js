@@ -1,16 +1,19 @@
 'use strict';
 
-const worldfile = require("../../data/worldfile");
+const mongoose = require('mongoose'),
+  Room = mongoose.model('Rooms'),
+  Npc = mongoose.model('Npcs'),
+  Dialogue = mongoose.model('Dialogues');
 const helper = require("./helper");
-const uuidv4 = require('uuid/v4');
 
-exports.initialState = function() {
+exports.initialState = async function() {
+  const npcdata = await Npc.find({});
   const npc = [];
-  for (let i = 0; i < worldfile.npc.length; i++) {
+  for (let i = 0; i < npcdata.length; i++) {
     npc.push(
       {
-        id : uuidv4(),
-        room : worldfile.npc[i].initial.room
+        id : npcdata[i].id,
+        room : npcdata[i].initial.room
       }
     )
   }
@@ -22,54 +25,62 @@ exports.initialState = function() {
   }
 }
 
-exports.look = function(state) {
-  const room = worldfile.rooms[state.player.room];
-  const exits = [];
-  for (const exit in room.exits)
-    exits.push(exit);
-  const npc = worldfile.npc
-    .reduce((a, e, i) => {
-      if (state.npc[i].room === state.player.room) {
-        a.push({
-          label: e.label,
-          id: state.npc[i].id
-        });
-      }
-      return a;
-    }, []);
+exports.look = async function(state) {
+  const room = await Room.findOne(
+    {id: state.player.room}
+  );
+  const exits = room.exits.map(e => e.label);
+  const npcs = state.npc
+    .filter(e => e.room == state.player.room)
+    .map(e => e.id);
+  const npcdata = (await Npc.find({id: {$in: npcs}}))
+    .map(
+      e => ({
+        label: e.label,
+        id: e.id,
+        dialogue: e.dialogue
+      })
+    )
   return { 
     output: {
-      desc: room.desc + helper.npcString(npc.map(e => e.label)),
+      desc: room.desc + helper.npcString(npcdata.map(e => e.label)),
       exit: exits,
-      talk: npc.map(e => [e.label, e.id]),
-      look: npc.map(e => [e.label, e.id])
+      talk: npcdata.map(e => [e.label, e.id]),
+      look: npcdata.map(e => [e.label, e.dialogue])
     }
   }
 }
 
-exports.move = function(state, direction) {
-  const room = worldfile.rooms[state.player.room];
-  if (!(direction in room.exits))
+exports.move = async function(state, direction) {
+  const room = await Room.findOne(
+    {id: state.player.room}
+  );
+  const exit = room.exits.filter(
+    (e) => e.label == direction
+  )
+  if (exit.length == 0)
     throw "No such direction."
   return {
     output: { },
     update: {
       player: {
-        room: room.exits[direction]
+        room: exit[0].dest
       }
     }
   }
 }
 
-exports.talk = function(state, id) {
-  const npc_index = state.npc.findIndex((e) => e.id == id);
-  if (npc_index == -1)
-    throw "We don't support dialog trees yet";
-  if (state.npc[npc_index].room != state.player.room)
-    throw "I don't see anyone like that here.";
+exports.talk = async function(state, id) {
+  const dialogue = await Dialogue.findOne(
+    {id : id}
+  );
+  //TODO: Dialogue trees, and also making sure we can't skip ahead in them
+  if (dialogue == null)
+    throw "Who are you talking to?"
+
   return {
     output: {
-      desc: worldfile.npc[npc_index].dialogue,
+      desc: dialogue.text,
       talk: []
     }
   }

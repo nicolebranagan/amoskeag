@@ -47,8 +47,8 @@ module.exports = function(app) {
   app.route('/game/move')
     .post(gameController.move)
 
-  app.route('/game/talk')
-    .post(gameController.talk)
+  app.route('/game/talk/:talkId')
+    .get(gameController.talk)
 
   app.all('*', function(req, res) {
     res.status(404).json({
