@@ -9,6 +9,29 @@ const cfg = require('../../config');
 const game = require('../../game/game');
 const bcrypt = require('bcrypt');
 
+exports.get_anonymous_token = function(req, res) {
+  const save_id = uuidv4();
+  const new_game = new Save({id: save_id});
+  new_game.save(function(err, save) {
+    if (err) {
+      res.json({message: err.toString(), success: false})
+      return;
+    }
+    save.state = game.initialState();
+    save.save();
+    const payload = {
+      save: save_id
+    };
+    const token = jwt.encode(payload, cfg.jwtSecret);
+    res.json({
+        token: token,
+        anonymous: true,
+        success: true
+    });
+
+  });
+}
+
 exports.get_token = function(req, res) {  
   if (!(req.body.username && req.body.password))
     res.status(401).json({success: false});
@@ -40,6 +63,7 @@ exports.get_token = function(req, res) {
         var token = jwt.encode(payload, cfg.jwtSecret);
         res.json({
             token: token,
+            anonymous: false,
             success: true
         });
       } else {
@@ -94,12 +118,10 @@ exports.create = function(req, res) {
     });
   const name = req.body.username;
   const password = req.body.password;
-  console.log(password)
   const save_id = uuidv4();
   bcrypt.hash(password, 10)
   .then(
     function(hash) {
-      console.log(hash)
       const new_user = new User({
         name: name,
         password: hash,

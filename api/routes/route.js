@@ -21,6 +21,7 @@ module.exports = function(app) {
     .post(userController.create);
 
   app.route('/users/token')
+    .get(userController.get_anonymous_token)
     .post(userController.get_token);
 
   app.get("/users/save", auth.authenticate(), function(req, res) {  
