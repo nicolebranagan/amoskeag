@@ -1,6 +1,6 @@
 'use strict';
 
-const worldfile = require("../data/worldfile");
+const worldfile = require("../../data/worldfile");
 const helper = require("./helper");
 const uuidv4 = require('uuid/v4');
 
@@ -31,7 +31,7 @@ exports.look = function(state) {
     .reduce((a, e, i) => {
       if (state.npc[i].room === state.player.room) {
         a.push({
-          desc: e.desc,
+          label: e.label,
           id: state.npc[i].id
         });
       }
@@ -39,9 +39,10 @@ exports.look = function(state) {
     }, []);
   return { 
     output: {
-      desc: room.desc + helper.npcString(npc.map(e => e.desc)),
+      desc: room.desc + helper.npcString(npc.map(e => e.label)),
       exit: exits,
-      talk: npc.map(e => [e.desc, e.id])
+      talk: npc.map(e => [e.label, e.id]),
+      look: npc.map(e => [e.label, e.id])
     }
   }
 }

@@ -3,7 +3,7 @@
 const mongoose = require('mongoose'),
   Save = mongoose.model('Saves');
 const uuidv4 = require('uuid/v4');
-const game = require('../../game/game');
+const game = require('../game/game');
 
 async function getUser(id) {
   const user = await Save.findOne({id: id});

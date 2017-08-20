@@ -41,6 +41,8 @@ module.exports = function(app) {
 
   app.route('/game/look')
     .get(gameController.look)
+  
+  app.route('/game/look/:lookId')
 
   app.route('/game/move')
     .post(gameController.move)

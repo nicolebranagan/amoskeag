@@ -1,3 +1,5 @@
+'use strict';
+
 function listString(list, begin, end, begin_pl, end_pl) {
   if (list.length == 0)
     return "";

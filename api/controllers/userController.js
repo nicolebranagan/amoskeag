@@ -6,7 +6,7 @@ const mongoose = require('mongoose'),
 const uuidv4 = require('uuid/v4');
 const jwt = require("jwt-simple");
 const cfg = require('../../config');
-const game = require('../../game/game');
+const game = require('../game/game');
 const bcrypt = require('bcrypt');
 
 exports.get_anonymous_token = function(req, res) {

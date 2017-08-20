@@ -15,7 +15,8 @@
   ],
   "npc" : [
     {
-      "desc" : "a man",
+      "label" : "a man",
+      "desc" : "It's hard to tell if they're really a man, or something else. Perhaps they don't exist at all.",
       "dialogue" : "howdy",
       "initial" : {
         "room" : 1
