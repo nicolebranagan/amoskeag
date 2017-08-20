@@ -32,22 +32,6 @@ exports.delete_all = function(req, res) {
   });
 };
 
-exports.create = function(req, res) {
-  const new_game = new Save({id: uuidv4()});
-  new_game.save(function(err, save) {
-    if (err) {
-      res.json({message: err.toString(), success: false})
-      return;
-    }
-    save.state = game.initialState();
-    save.save();
-    res.json({
-      id: save.id,
-      success: true,
-    });
-  });
-};
-
 exports.read = function(req, res) {
   Save.findOneAndUpdate(
     {id: req.params.userId},

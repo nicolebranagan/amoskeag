@@ -32,9 +32,6 @@ module.exports = function(app) {
   app.route('/saves/')
     .get(saveController.read_all)
     .delete(saveController.delete_all);
-  
-  app.route('/saves/new')
-    .get(saveController.create);
 
   app.route('/saves/:userId')
     .get(saveController.read)
