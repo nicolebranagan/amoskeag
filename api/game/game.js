@@ -46,8 +46,8 @@ exports.look = async function(state) {
       desc: room.desc 
         + helper.npcString(npcdata.map(e => e.label)),
       exit: exits,
-      look: npcdata.map(e => [e.label, e.guid]),
-      talk: npcdata.map(e => [e.label, e.dialogue])
+      look: npcdata.map(e => ({label: e.label, href: "/game/look/" + e.guid})),
+      talk: npcdata.map(e => ({label: e.label, href: "/game/talk/" + e.dialogue}))
     }
   }
 }
