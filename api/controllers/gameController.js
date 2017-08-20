@@ -34,11 +34,15 @@ function takeAction(id, res, action) {
         res.json({ message: 'No such user', success: false })
         return;
       }
-      see = action(user);
-      update(id, see.update)
+      return action(user);
   })
   .then(
-    function(user) {
+    function(out) {
+      see = out;
+      return update(id, see.update);
+  })
+  .then(
+    function() {
       res.json(
         {
           output: see.output,
@@ -55,7 +59,7 @@ function takeAction(id, res, action) {
 
 exports.look = function(req, res) {
   takeAction(req.params.userId, res,
-    (user) => game.look(user)
+    async (user) => game.look(user)
   )
 };
 
@@ -69,7 +73,7 @@ exports.move = function(req, res) {
     );
   else
     takeAction(req.params.userId, res,
-      (user) => game.move(user, req.body.exit)
+      async (user) => game.move(user, req.body.exit)
     )
 }
 
@@ -83,6 +87,6 @@ exports.talk = function(req, res) {
     );
   else
     takeAction(req.params.userId, res,
-      (user) => game.talk(user, req.body.talk)
+      async (user) => game.talk(user, req.body.talk)
     )
 }
