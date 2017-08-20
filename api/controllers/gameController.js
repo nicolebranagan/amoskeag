@@ -27,7 +27,7 @@ async function update(id, update) {
 } 
 
 function takeAction(id, res, action) {
-  let see;
+  let result;
   getUser(id).then(
     function(user) {
       if (user == null) {
@@ -38,14 +38,14 @@ function takeAction(id, res, action) {
   })
   .then(
     function(out) {
-      see = out;
-      return update(id, see.update);
+      result = out;
+      return update(id, result.update);
   })
   .then(
     function() {
       res.json(
         {
-          output: see.output,
+          output: result.output,
           success: true
         }
       )
@@ -59,7 +59,7 @@ function takeAction(id, res, action) {
 
 exports.look = function(req, res) {
   takeAction(req.params.userId, res,
-    async (user) => game.look(user)
+    (state) => game.look(state)
   )
 };
 
@@ -73,7 +73,7 @@ exports.move = function(req, res) {
     );
   else
     takeAction(req.params.userId, res,
-      async (user) => game.move(user, req.body.exit)
+      (state) => game.move(state, req.body.exit)
     )
 }
 
@@ -87,6 +87,6 @@ exports.talk = function(req, res) {
     );
   else
     takeAction(req.params.userId, res,
-      async (user) => game.talk(user, req.body.talk)
+      (state) => game.talk(state, req.body.talk)
     )
 }
