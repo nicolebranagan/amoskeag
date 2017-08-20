@@ -63,6 +63,20 @@ exports.look = function(req, res) {
   )
 };
 
+exports.look_at = function(req, res) {
+  if (!req.params.lookId)
+    res.status(422).json(
+      {
+        message: "Who are you talking to?",
+        success: false,
+      }
+    );
+  else
+    takeAction(req.user.save, res,
+      (state) => game.look_at(state, req.params.lookId)
+    )
+}
+
 exports.move = function(req, res) {
   if (!req.body.exit)
     res.status(422).json(

@@ -38,6 +38,7 @@ async function load() {
     const new_dialogue = new Dialogue(
       {
         id: id,
+        npc: dialogue.npc,
         text: dialogue.text,
         parent: dialogue.parent
       }
@@ -53,6 +54,7 @@ async function load() {
     const new_npc = new Npc(
       {
         id : id,
+        guid: uuidv4(),
         label: npc.label,
         desc: npc.desc,
         dialogue: dialogue_ids[npc.dialogue],

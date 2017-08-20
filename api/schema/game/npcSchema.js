@@ -7,6 +7,9 @@ const NpcSchema = new Schema({
     type: String,
     required: true,
   },
+  guid : {
+    type: String,
+  },
   label: {
     type: String
   },

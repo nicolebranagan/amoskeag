@@ -31,7 +31,8 @@
   ],
   "dialogue" : [
     {
-      "text" : "Howdy"
+      "text" : "Howdy",
+      "npc" : 0
     }
   ]
 }

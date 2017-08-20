@@ -37,18 +37,35 @@ exports.look = async function(state) {
     .map(
       e => ({
         label: e.label,
-        id: e.id,
+        guid: e.guid,
         dialogue: e.dialogue
       })
     )
   return { 
     output: {
-      desc: room.desc + helper.npcString(npcdata.map(e => e.label)),
+      desc: room.desc 
+        + helper.npcString(npcdata.map(e => e.label)),
       exit: exits,
-      talk: npcdata.map(e => [e.label, e.id]),
-      look: npcdata.map(e => [e.label, e.dialogue])
+      look: npcdata.map(e => [e.label, e.guid]),
+      talk: npcdata.map(e => [e.label, e.dialogue])
     }
   }
+}
+
+exports.look_at = async function(state, target) {
+  const npc = await Npc.findOne(
+    {guid: target}
+  )
+  if (npc) {
+    if (state.npc[npc.id].room !== state.player.room)
+      throw "I don't see anyone here"
+    return { 
+      output: {
+        desc: npc.desc
+      }
+    }
+  }
+  throw "That isn't here."
 }
 
 exports.move = async function(state, direction) {
@@ -77,7 +94,11 @@ exports.talk = async function(state, id) {
   //TODO: Dialogue trees, and also making sure we can't skip ahead in them
   if (dialogue == null)
     throw "Who are you talking to?"
-
+  const npc = await Npc.findOne(
+    {id: dialogue.npc}
+  )
+  if (!npc || state.npc[npc.id].room !== state.player.room)
+    throw "I don't see anyone here"
   return {
     output: {
       desc: dialogue.text,

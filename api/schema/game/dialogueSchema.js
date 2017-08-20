@@ -7,6 +7,10 @@ const DialogueSchema = new Schema({
     type: String,
     required: true,
   },
+  npc : {
+    type: String,
+    required: true,
+  },
   text: {
     type: String
   },
