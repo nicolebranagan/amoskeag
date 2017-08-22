@@ -93,9 +93,8 @@ async function load() {
     const dialogue = worldfile.dialogue[index];
     const new_dialogue = new_dialogues[index];
     new_dialogue.npc = npc_ids[dialogue.npc];
-    if (dialogue.parent)
+    if (dialogue.parent !== undefined)
       new_dialogue.parent = get_dialogue(dialogue.parent);
-    console.log(new_dialogue)
     if (dialogue.children)
       new_dialogue.children = dialogue.children.map(
         (e) => ({

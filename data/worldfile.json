@@ -42,13 +42,23 @@
         {
           "label": "I hate you!",
           "id": 1
+        },
+        {
+          "label": "I love you!",
+          "id" : "respond"
         }
       ]
     },
     {
       "text" : "I hate you too!",
       "npc" : "man1",
-      "parent" : "man1"
+      "parent" : 0
+    },
+    {
+      "name": "respond",
+      "npc" : "man1",
+      "parent": "man1",
+      "text": "Oh cool"
     }
   ]
 }

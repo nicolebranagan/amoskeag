@@ -23,7 +23,7 @@ const NpcSchema = new Schema({
       required: true
     },
     room: {
-      type: String,
+      type: Number,
     }
   }
 });

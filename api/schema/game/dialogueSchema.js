@@ -12,7 +12,7 @@ const DialogueSchema = new Schema({
     required: true
   },
   npc : {
-    type: String,
+    type: Number,
     required: true,
   },
   text: {
@@ -20,7 +20,7 @@ const DialogueSchema = new Schema({
     required: true
   },
   parent: {
-    type: String
+    type: Number
   },
   children: [
     {
