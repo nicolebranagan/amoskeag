@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const RoomSchema = new Schema({
   id : {
-    type: String,
+    type: Number,
     required: true,
   },
   guid: {
@@ -17,9 +17,11 @@ const RoomSchema = new Schema({
     {
       label: {
         type: String,
+        required: true,
       },
       dest: {
         type: String,
+        required: true
       }
     }
   ]

@@ -4,7 +4,6 @@ const mongoose = require('mongoose'),
   Room = mongoose.model('Rooms'),
   Npc = mongoose.model('Npcs'),
   Dialogue = mongoose.model('Dialogues');
-const helper = require("./helper");
 
 exports.initialState = async function() {
   const npcdata = await Npc.find({});
@@ -13,6 +12,7 @@ exports.initialState = async function() {
     npc.push(
       {
         id : npcdata[i].id,
+        label: npcdata[i].initial.label,
         room : npcdata[i].initial.room
       }
     )
@@ -34,17 +34,17 @@ exports.look = async function(state) {
   const npcdata = (await Npc.find({id: {$in: npcs}}))
     .map(
       e => ({
-        label: e.label,
+        label: state.npc[e.id].label,
         guid: e.guid,
         dialogue: e.dialogue
       })
     )
+  const lookdata = npcdata.slice(); // One day there will be more to see
   return { 
     output: {
-      desc: room.desc 
-        + helper.npcString(npcdata.map(e => e.label)),
-      exit: exits.map(e=> ({label: e.label, exit: e.dest})),
-      look: npcdata.map(e => ({label: e.label, href: "/game/look/" + e.guid})),
+      desc: room.desc,
+      exit: exits.map(e => ({label: e.label, exit: e.dest})),
+      look: lookdata.map(e => ({label: e.label, href: "/game/look/" + e.guid})),
       talk: npcdata.map(e => ({label: e.label, href: "/game/talk/" + e.dialogue}))
     }
   }
@@ -86,16 +86,14 @@ exports.move = async function(state, direction) {
 
 exports.talk = async function(state, id) {
   const dialogue = await Dialogue.findOne({guid : id});
-
   if ((dialogue == null) ||
       (dialogue.parent && !(dialogue.parent in state.seen_convo)))
     throw "Who are you talking to?"
 
-  const npc = await Npc.findOne(
-    {id: dialogue.npc}
-  )
+  const npc = await Npc.findOne({id: dialogue.npc})
   if (!npc || state.npc[npc.id].room !== state.player.room)
     throw "I don't see anyone here"
+
   let talk = [];
   if (dialogue.children)
     talk = dialogue.children.map(

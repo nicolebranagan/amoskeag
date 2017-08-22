@@ -4,14 +4,12 @@ const Schema = mongoose.Schema;
 
 const NpcSchema = new Schema({
   id : {
-    type: String,
+    type: Number,
     required: true,
   },
   guid : {
     type: String,
-  },
-  label: {
-    type: String
+    required: true,
   },
   desc: {
     type: String
@@ -20,6 +18,10 @@ const NpcSchema = new Schema({
     type: String
   },
   initial: {
+    label: {
+      type: String,
+      required: true
+    },
     room: {
       type: String,
     }

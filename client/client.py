@@ -32,7 +32,10 @@ class Game():
       'Authorization': 'Bearer ' + self.token
     }).json()
     if ('success' in r):
-      return r["output"]
+      if (r["success"] == True):
+        return r["output"]
+      else:
+        raise IOError(r["message"])
     else:
       raise IOError()
     
@@ -82,6 +85,7 @@ class Game():
     return self.__go(self.looks, to)
   
   def move(self, dest):
+    print(self.exits)
     try:
       xit = next(i["exit"] for i in self.exits if i["label"] == dest)
     except StopIteration:
@@ -99,18 +103,21 @@ game = Game(get_token())
 print(game.look())
 while(cond):
   text = input('$ ')
-  if (text == "exit"):
-    cond = False
-    print("Thanks for playing!")
-  elif (text == "talk"):
-    print(game.talk())
-  elif (text == "look"):
-    print(game.look_at())
-  elif (text.startswith("look ")):
-    print(game.look_at_to(text[5:]))
-  elif (text.startswith("talk ")):
-    print(game.talk_to(text[5:]))
-  elif (text.startswith("move ")):
-    print(game.move(text[5: ]))
-  else:
-    print(game.look())
+  try:
+    if (text == "exit"):
+      cond = False
+      print("Thanks for playing!")
+    elif (text == "talk"):
+      print(game.talk())
+    elif (text == "look"):
+      print(game.look_at())
+    elif (text.startswith("look ")):
+      print(game.look_at_to(text[5:]))
+    elif (text.startswith("talk ")):
+      print(game.talk_to(text[5:]))
+    elif (text.startswith("move ")):
+      print(game.move(text[5: ]))
+    else:
+      print(game.look())
+  except IOError as e:
+    print("Error: " + str(e))

@@ -23,6 +23,9 @@ const SaveSchema = new Schema({
         id: {
           type: String
         },
+        label: {
+          type: String,
+        },
         room: {
           type: Number
         }

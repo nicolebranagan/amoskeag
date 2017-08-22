@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const DialogueSchema = new Schema({
   id : {
-    type: String,
+    type: Number,
     required: true,
   },
   guid : {
@@ -26,9 +26,11 @@ const DialogueSchema = new Schema({
     {
       label: {
         type: String,
+        required: true,
       },
       guid: {
-        type: String
+        type: String,
+        required: true
       }
     }
   ]

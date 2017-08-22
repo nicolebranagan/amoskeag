@@ -1,39 +1,44 @@
 {
   "rooms" : [
     {
+      "name" : "room1",
       "desc" : "You are in a plain void. You can't comprehend what the world is like.",
       "exits" : {
-        "NORTH": 1
+        "NORTH": "room2"
       }
     },
     {
+      "name" : "room2",
       "desc" : "You're in another room. This one is just as incomprehensible, but calming.",
       "exits" : {
-        "SOUTH" : 0
+        "SOUTH" : "room1"
       }
     }
   ],
   "npc" : [
     {
+      "name" : "man1",
       "label" : "a man",
       "desc" : "It's hard to tell if they're really a man, or something else. Perhaps they don't exist at all.",
-      "dialogue" : 0,
+      "dialogue" : "man1",
       "initial" : {
-        "room" : 0
+        "room" : "room1"
       }
     },
     {
-      "desc" : "a denizen of the void",
+      "name" : "man2",
+      "label" : "a denizen of the void",
       "initial" : {
-        "room" : 7
+        "room" : "room2"
       }
     }
   ],
   "dialogue" : [
     {
       "text" : "Howdy",
-      "npc" : 0,
-      "children" : [
+      "npc" : "man1",
+      "name" : "man1",
+      "children": [
         {
           "label": "I hate you!",
           "id": 1
@@ -42,8 +47,8 @@
     },
     {
       "text" : "I hate you too!",
-      "npc" : 0,
-      "parent" : 0
+      "npc" : "man1",
+      "parent" : "man1"
     }
   ]
 }
