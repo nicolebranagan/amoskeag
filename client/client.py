@@ -27,7 +27,7 @@ class Game():
   def __init__(self, token):
     self.token = token
   
-  def __get(self, url):
+  def _get(self, url):
     r = requests.get(server + url, headers = {
       'Authorization': 'Bearer ' + self.token
     }).json()
@@ -36,7 +36,7 @@ class Game():
     else:
       raise IOError()
     
-  def __post(self, url, data):
+  def _post(self, url, data):
     r = requests.post(server + url, headers = {
       'Authorization': 'Bearer ' + self.token
     }, data=data).json()
@@ -54,7 +54,7 @@ class Game():
       url = next(i["href"] for i in data if i["label"] == dest)
     except StopIteration:
       return "Can't find " + dest
-    r = self.__get(
+    r = self._get(
       url
     )
     if ("talk" in r):
@@ -62,12 +62,12 @@ class Game():
     return r["desc"]
     
   def look(self):
-    r = self.__get('/game/look')
+    r = self._get('/game/look')
     self.exits = r["exit"]
     self.looks = r["look"]
     self.talks = r["talk"]
 
-    return r["desc"] + "\n\nExits are " + ', '.join(self.exits)
+    return r["desc"] + "\n\nExits are " + ', '.join([e["label"] for e in self.exits])
   
   def talk(self):
     return self.__say(self.talks)
@@ -82,10 +82,16 @@ class Game():
     return self.__go(self.looks, to)
   
   def move(self, dest):
-    r = self.__post('/game/move', {"exit":dest})
+    try:
+      xit = next(i["exit"] for i in self.exits if i["label"] == dest)
+    except StopIteration:
+      return "Can't go there"
+    r = self._post('/game/move', {"exit":xit})
     if (r["success"] == True):
       return self.look()
     else:
+      if ("message" in r):
+        return r["message"]
       return "Can't go there."
 
 cond = True

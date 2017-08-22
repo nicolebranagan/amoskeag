@@ -27,7 +27,7 @@ exports.initialState = async function() {
 
 exports.look = async function(state) {
   const room = await Room.findOne({id: state.player.room});
-  const exits = room.exits.map(e => e.label);
+  const exits = room.exits;
   const npcs = state.npc
     .filter(e => e.room == state.player.room)
     .map(e => e.id);
@@ -43,7 +43,7 @@ exports.look = async function(state) {
     output: {
       desc: room.desc 
         + helper.npcString(npcdata.map(e => e.label)),
-      exit: exits,
+      exit: exits.map(e=> ({label: e.label, exit: e.dest})),
       look: npcdata.map(e => ({label: e.label, href: "/game/look/" + e.guid})),
       talk: npcdata.map(e => ({label: e.label, href: "/game/talk/" + e.dialogue}))
     }
@@ -67,15 +67,18 @@ exports.look_at = async function(state, target) {
 exports.move = async function(state, direction) {
   const room = await Room.findOne({id: state.player.room});
   const exit = room.exits.filter(
-    (e) => e.label == direction
+    (e) => e.dest == direction
   )
   if (exit.length == 0)
     throw "No such direction."
+  const new_room = await Room.findOne({guid: direction})
+  if (!new_room)
+    throw "No such room."
   return {
     output: { },
     update: {
       player: {
-        room: exit[0].dest
+        room: new_room.id
       }
     }
   }

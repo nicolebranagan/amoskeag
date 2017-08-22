@@ -11,14 +11,17 @@ async function load() {
   await Room.remove({});
   await Dialogue.remove({});
   await Npc.remove({});
+
   const room_ids = [];
+  const new_rooms = [];
   for (const index in worldfile.rooms) {
-    const id = index;
+    const guid = uuidv4();
     const room = worldfile.rooms[index];
-    room_ids[index] = id;
+    room_ids[index] = guid;
 
     const new_room = new Room ({
-      id: id,
+      id: index,
+      guid: guid,
       desc: room.desc,
       exits: Object.keys(room.exits).map(
         (e) => ({
@@ -27,6 +30,14 @@ async function load() {
         })
       )
     })
+    new_rooms[index] = new_room;
+  }
+  for (const index in worldfile.rooms) {
+    const guid = uuidv4();
+    const room = worldfile.rooms[index];
+    const new_room = new_rooms[index];
+    for (const exit of new_room.exits)
+      exit.dest = room_ids[exit.dest]
     await new_room.save();
   }
 
@@ -45,7 +56,7 @@ async function load() {
         parent: dialogue.parent,
       }
     )
-    new_dialogues.push(new_dialogue);
+    new_dialogues[index] = new_dialogue;
   }
   for (const index in worldfile.dialogue) {
     const dialogue = worldfile.dialogue[index];
@@ -73,7 +84,7 @@ async function load() {
         desc: npc.desc,
         dialogue: dialogue_ids[npc.dialogue],
         initial: {
-          room: room_ids[npc.initial.room]
+          room: npc.initial.room
         }
       }
     )
