@@ -22,6 +22,9 @@ async function update(id, update) {
     if ("room" in update.player)
       user.state.player.room = update.player.room;
   }
+  if ("seen_convo" in update) {
+    user.state.seen_convo.push(update.seen_convo)
+  }
   user.last_date = Date.now();
   await user.save();
 } 

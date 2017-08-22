@@ -31,18 +31,33 @@ async function load() {
   }
 
   const dialogue_ids = [];
+  const new_dialogues = [];
   for (const index in worldfile.dialogue) {
     const id = uuidv4();
     const dialogue = worldfile.dialogue[index];
     dialogue_ids[index] = id;
     const new_dialogue = new Dialogue(
       {
-        id: id,
+        id: index,
+        guid: id,
         npc: dialogue.npc,
         text: dialogue.text,
-        parent: dialogue.parent
+        parent: dialogue.parent,
       }
     )
+    new_dialogues.push(new_dialogue);
+  }
+  for (const index in worldfile.dialogue) {
+    const dialogue = worldfile.dialogue[index];
+    const new_dialogue = new_dialogues[index];
+    if (dialogue.children)
+      new_dialogue.children = dialogue.children.map(
+        (e) => ({
+          label: e.label,
+          guid: dialogue_ids[e.id]
+        })
+      )
+    console.log(new_dialogue);
     await new_dialogue.save();
   }
 

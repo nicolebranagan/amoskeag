@@ -7,16 +7,31 @@ const DialogueSchema = new Schema({
     type: String,
     required: true,
   },
+  guid : {
+    type: String,
+    required: true
+  },
   npc : {
     type: String,
     required: true,
   },
   text: {
-    type: String
+    type: String,
+    required: true
   },
   parent: {
     type: String
-  }
+  },
+  children: [
+    {
+      label: {
+        type: String,
+      },
+      guid: {
+        type: String
+      }
+    }
+  ]
 });
 
 module.exports = mongoose.model('Dialogues', DialogueSchema);

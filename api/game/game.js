@@ -26,9 +26,7 @@ exports.initialState = async function() {
 }
 
 exports.look = async function(state) {
-  const room = await Room.findOne(
-    {id: state.player.room}
-  );
+  const room = await Room.findOne({id: state.player.room});
   const exits = room.exits.map(e => e.label);
   const npcs = state.npc
     .filter(e => e.room == state.player.room)
@@ -53,9 +51,7 @@ exports.look = async function(state) {
 }
 
 exports.look_at = async function(state, target) {
-  const npc = await Npc.findOne(
-    {guid: target}
-  )
+  const npc = await Npc.findOne({guid: target})
   if (npc) {
     if (state.npc[npc.id].room !== state.player.room)
       throw "I don't see anyone here"
@@ -69,9 +65,7 @@ exports.look_at = async function(state, target) {
 }
 
 exports.move = async function(state, direction) {
-  const room = await Room.findOne(
-    {id: state.player.room}
-  );
+  const room = await Room.findOne({id: state.player.room});
   const exit = room.exits.filter(
     (e) => e.label == direction
   )
@@ -88,21 +82,32 @@ exports.move = async function(state, direction) {
 }
 
 exports.talk = async function(state, id) {
-  const dialogue = await Dialogue.findOne(
-    {id : id}
-  );
-  //TODO: Dialogue trees, and also making sure we can't skip ahead in them
-  if (dialogue == null)
+  const dialogue = await Dialogue.findOne({guid : id});
+
+  if ((dialogue == null) ||
+      (dialogue.parent && !(dialogue.parent in state.seen_convo)))
     throw "Who are you talking to?"
+
   const npc = await Npc.findOne(
     {id: dialogue.npc}
   )
   if (!npc || state.npc[npc.id].room !== state.player.room)
     throw "I don't see anyone here"
+  let talk = [];
+  if (dialogue.children)
+    talk = dialogue.children.map(
+      e => ({
+        "label": e.label,
+        "href": "/game/talk/" + e.guid
+      })
+    )
   return {
     output: {
       desc: dialogue.text,
-      talk: []
+      talk: talk
+    },
+    update: {
+      seen_convo: dialogue.id
     }
   }
 }

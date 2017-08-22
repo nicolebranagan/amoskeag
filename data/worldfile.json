@@ -32,7 +32,23 @@
   "dialogue" : [
     {
       "text" : "Howdy",
-      "npc" : 0
+      "npc" : 0,
+      "children" : [
+        {
+          "label": "I hate you!",
+          "id": 1
+        }
+      ]
+    },
+    {
+      "text" : "I hate you too!",
+      "npc" : 0,
+      "parent" : 0
+    },
+    {
+      "text" : "You can never get to me",
+      "npc" : 0,
+      "parent" : 2
     }
   ]
 }

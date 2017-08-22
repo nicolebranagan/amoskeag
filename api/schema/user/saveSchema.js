@@ -27,6 +27,9 @@ const SaveSchema = new Schema({
           type: Number
         }
       }
+    ],
+    seen_convo: [
+      {type: String}
     ]
   }
 });
