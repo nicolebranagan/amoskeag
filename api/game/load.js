@@ -57,7 +57,6 @@ async function load() {
           guid: dialogue_ids[e.id]
         })
       )
-    console.log(new_dialogue);
     await new_dialogue.save();
   }
 

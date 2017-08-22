@@ -44,11 +44,6 @@
       "text" : "I hate you too!",
       "npc" : 0,
       "parent" : 0
-    },
-    {
-      "text" : "You can never get to me",
-      "npc" : 0,
-      "parent" : 2
     }
   ]
 }
