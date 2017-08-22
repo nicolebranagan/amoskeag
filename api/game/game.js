@@ -14,7 +14,8 @@ exports.initialState = async function() {
       {
         id : npcdata[i].id,
         label: npcdata[i].initial.label,
-        room : npcdata[i].initial.room
+        room : npcdata[i].initial.room,
+        carryable: npcdata[i].initial.carryable
       }
     )
   }
@@ -36,8 +37,10 @@ exports.look = async function(state) {
     .map(
       e => ({
         label: state.npc[e.id].label,
+        carryable: state.npc[e.id].carryable,
         guid: e.guid,
-        dialogue: e.dialogue
+        dialogue: e.dialogue,
+        desc: e.desc
       })
     )
   return { 
@@ -46,18 +49,24 @@ exports.look = async function(state) {
       exit: exits
               .map(e => ({label: e.label, exit: e.dest})),
       look: npcdata
+              .filter(e => e.desc !== undefined)
               .map(e => ({label: e.label, href: "/game/look/" + e.guid})),
       talk: npcdata
               .filter(e => e.dialogue !== undefined)
-              .map(e => ({label: e.label, href: "/game/talk/" + e.dialogue}))
+              .map(e => ({label: e.label, href: "/game/talk/" + e.dialogue})),
+      get: npcdata
+              .filter(e => e.carryable)
+              .map(e => ({label: e.label, href: "/game/get/" + e.guid})),
     }
   }
 }
 
 exports.look_at = async function(state, target) {
+  console.log(target);
   const npc = await Npc.findOne({guid: target})
   if (npc) {
-    if (state.npc[npc.id].room !== state.player.room)
+    if (state.npc[npc.id].room !== state.player.room &&
+        !(state.player.inventory.includes(npc.id)))
       throw "I don't see anyone here"
     return { 
       output: {
@@ -113,6 +122,33 @@ exports.talk = async function(state, id) {
     },
     update: {
       seen_convo: dialogue.id
+    }
+  }
+}
+
+exports.status = async function(state) {
+  const npcdata = (await Npc.find({id: {$in: state.player.inventory}}))
+  return { 
+    output: {
+      inventory: npcdata
+              .map(e => ({label: state.npc[e.id].label, look: "/game/look/" + e.guid})),
+    }
+  }
+}
+
+exports.get = async function(state, target) {
+  const npc = await Npc.findOne({guid: target})
+  if (!npc || state.npc[npc.id].room !== state.player.room)
+    throw "I don't see that here"
+  if (!state.npc[npc.id].carryable)
+    throw "You can't get that."
+
+  return {
+    output: {
+      desc: "You take " + state.npc[npc.id].label + "."
+    },
+    update: {
+      inventory: [[+1, npc.id]]
     }
   }
 }

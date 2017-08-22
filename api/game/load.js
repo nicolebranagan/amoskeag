@@ -81,7 +81,8 @@ async function load() {
         dialogue: dialogue_ids[get_dialogue(npc.dialogue)],
         initial: {
           label: npc.label,
-          room: room_ids[npc.initial.room]
+          room: room_ids[npc.initial.room],
+          carryable: npc.carryable
         }
       }
     )

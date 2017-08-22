@@ -24,6 +24,10 @@ const NpcSchema = new Schema({
     },
     room: {
       type: Number,
+    },
+    carryable: {
+      type: Boolean,
+      default: false
     }
   }
 });

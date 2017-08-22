@@ -25,6 +25,14 @@ async function update(id, update) {
   if ("seen_convo" in update) {
     user.state.seen_convo.push(update.seen_convo)
   }
+  if ("inventory" in update) {
+    for (const item of update.inventory) {
+      if (item[0] == +1) {
+        user.state.player.inventory.push(item[1]);
+        user.state.npc[item[1]].room = undefined;
+      }
+    }
+  }
   user.last_date = Date.now();
   await user.save();
 } 
@@ -66,11 +74,17 @@ exports.look = function(req, res) {
   )
 };
 
+exports.status = function(req, res) {
+  takeAction(req.user.save, res,
+    (state) => game.status(state)
+  )
+};
+
 exports.look_at = function(req, res) {
   if (!req.params.lookId)
     res.status(422).json(
       {
-        message: "Who are you talking to?",
+        message: "Who are you looking at?",
         success: false,
       }
     );
@@ -105,5 +119,19 @@ exports.talk = function(req, res) {
   else
     takeAction(req.user.save, res,
       (state) => game.talk(state, req.params.talkId)
+    )
+}
+
+exports.get = function(req, res) {
+  if (!req.params.itemId)
+    res.status(422).json(
+      {
+        message: "Who are you looking at?",
+        success: false,
+      }
+    );
+  else
+    takeAction(req.user.save, res,
+      (state) => game.get(state, req.params.itemId)
     )
 }

@@ -16,7 +16,13 @@ const SaveSchema = new Schema({
       room: {
         type: Number,
         default: 0
-      }
+      },
+      inventory: [
+        {
+          type: Number,
+          default: []
+        }
+      ]
     },
     npc: [
       {
@@ -28,6 +34,9 @@ const SaveSchema = new Schema({
         },
         room: {
           type: Number
+        },
+        carryable: {
+          type: Boolean
         }
       }
     ],

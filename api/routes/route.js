@@ -51,6 +51,12 @@ module.exports = function(app) {
   app.route('/game/talk/:talkId')
     .get(gameController.talk)
 
+  app.route('/game/status')
+    .get(gameController.status)
+
+  app.route('/game/get/:itemId')
+    .get(gameController.get)
+
   app.all('*', function(req, res) {
     res.status(404).json({
       message: "Bad command or file name.",

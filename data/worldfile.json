@@ -34,6 +34,7 @@
     {
       "name" : "void",
       "label" : "the void",
+      "carryable" : true,
       "desc" : "The void looks back at you, confused.",
       "initial" : {
         "room": "room1"
