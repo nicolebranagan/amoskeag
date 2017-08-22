@@ -4,6 +4,7 @@ const mongoose = require('mongoose'),
   Room = mongoose.model('Rooms'),
   Npc = mongoose.model('Npcs'),
   Dialogue = mongoose.model('Dialogues');
+const helper = require("./helper");
 
 exports.initialState = async function() {
   const npcdata = await Npc.find({});
@@ -39,13 +40,16 @@ exports.look = async function(state) {
         dialogue: e.dialogue
       })
     )
-  const lookdata = npcdata.slice(); // One day there will be more to see
   return { 
     output: {
-      desc: room.desc,
-      exit: exits.map(e => ({label: e.label, exit: e.dest})),
-      look: lookdata.map(e => ({label: e.label, href: "/game/look/" + e.guid})),
-      talk: npcdata.map(e => ({label: e.label, href: "/game/talk/" + e.dialogue}))
+      desc: room.desc + helper.npcString(npcdata.map(e => e.label)),
+      exit: exits
+              .map(e => ({label: e.label, exit: e.dest})),
+      look: npcdata
+              .map(e => ({label: e.label, href: "/game/look/" + e.guid})),
+      talk: npcdata
+              .filter(e => e.dialogue !== undefined)
+              .map(e => ({label: e.label, href: "/game/talk/" + e.dialogue}))
     }
   }
 }

@@ -85,7 +85,6 @@ class Game():
     return self.__go(self.looks, to)
   
   def move(self, dest):
-    print(self.exits)
     try:
       xit = next(i["exit"] for i in self.exits if i["label"] == dest)
     except StopIteration:

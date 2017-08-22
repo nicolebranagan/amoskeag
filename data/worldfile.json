@@ -29,7 +29,14 @@
       "name" : "man2",
       "label" : "a denizen of the void",
       "initial" : {
-        "room" : "room2"
+      }
+    },
+    {
+      "name" : "void",
+      "label" : "the void",
+      "desc" : "The void looks back at you, confused.",
+      "initial" : {
+        "room": "room1"
       }
     }
   ],

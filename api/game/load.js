@@ -50,7 +50,8 @@ async function load() {
     const id = uuidv4();
     const dialogue = worldfile.dialogue[index];
     dialogue_ids[index] = id;
-    dialogue_id_from_name[dialogue.name] = index;
+    if (dialogue.name)
+      dialogue_id_from_name[dialogue.name] = index;
     const new_dialogue = new Dialogue(
       {
         id: index,
