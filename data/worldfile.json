@@ -38,6 +38,10 @@
       "desc" : "The void looks back at you, confused.",
       "initial" : {
         "room": "room1"
+      },
+      "use" : {
+        "target" : "man1",
+        "dialogue" : "void-man1"
       }
     }
   ],
@@ -67,6 +71,14 @@
       "npc" : "man1",
       "parent": "man1",
       "text": "Oh cool"
+    },
+    {
+      "name": "void-man1",
+      "text": "You use the void on the man, and the void and the man are one!",
+      "effect": [{
+        "command": "remove",
+        "target": "man1"
+      }]
     }
   ]
 }

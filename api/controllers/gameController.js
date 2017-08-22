@@ -13,28 +13,13 @@ async function getUser(id) {
 }
 
 async function update(id, update) {
-  const user = await Save.findOne({id: id});
   if (!update)
     return;
+  const user = await Save.findOne({id: id});
   if (user == null)
     throw "No such user."
-  if ("player" in update) {
-    if ("room" in update.player)
-      user.state.player.room = update.player.room;
-  }
-  if ("seen_convo" in update) {
-    user.state.seen_convo.push(update.seen_convo)
-  }
-  if ("inventory" in update) {
-    for (const item of update.inventory) {
-      if (item[0] == +1) {
-        user.state.player.inventory.push(item[1]);
-        user.state.npc[item[1]].room = undefined;
-      }
-    }
-  }
-  user.last_date = Date.now();
-  await user.save();
+  user.state = update;
+  return await user.save();
 } 
 
 function takeAction(id, res, action) {
@@ -50,10 +35,7 @@ function takeAction(id, res, action) {
   .then(
     function(out) {
       result = out;
-      return update(id, result.update);
-  })
-  .then(
-    function() {
+      update(id, result.update).then(()=>{});
       res.json(
         {
           output: result.output,

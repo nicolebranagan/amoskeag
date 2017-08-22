@@ -13,7 +13,6 @@ const DialogueSchema = new Schema({
   },
   npc : {
     type: Number,
-    required: true,
   },
   text: {
     type: String,

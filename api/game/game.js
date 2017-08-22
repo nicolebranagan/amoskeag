@@ -20,9 +20,6 @@ exports.initialState = async function() {
     )
   }
   return {
-    player : {
-      room : 0
-    },
     npc: npc
   }
 }
@@ -62,7 +59,6 @@ exports.look = async function(state) {
 }
 
 exports.look_at = async function(state, target) {
-  console.log(target);
   const npc = await Npc.findOne({guid: target})
   if (npc) {
     if (state.npc[npc.id].room !== state.player.room &&
@@ -87,20 +83,17 @@ exports.move = async function(state, direction) {
   const new_room = await Room.findOne({guid: direction})
   if (!new_room)
     throw "No such room."
+  state.player.room = new_room.id;
   return {
     output: { },
-    update: {
-      player: {
-        room: new_room.id
-      }
-    }
+    update: state
   }
 }
 
 exports.talk = async function(state, id) {
   const dialogue = await Dialogue.findOne({guid : id});
   if ((dialogue == null) ||
-      (dialogue.parent && !(dialogue.parent in state.seen_convo)))
+      (dialogue.parent !== undefined && !(dialogue.parent in state.seen_convo)))
     throw "Who are you talking to?"
 
   const npc = await Npc.findOne({id: dialogue.npc})
@@ -115,14 +108,13 @@ exports.talk = async function(state, id) {
         "href": "/game/talk/" + e.guid
       })
     )
+  state.seen_convo.push(dialogue.id);
   return {
     output: {
       desc: dialogue.text,
       talk: talk
     },
-    update: {
-      seen_convo: dialogue.id
-    }
+    update: state
   }
 }
 
@@ -142,13 +134,11 @@ exports.get = async function(state, target) {
     throw "I don't see that here"
   if (!state.npc[npc.id].carryable)
     throw "You can't get that."
-
+  state.player.inventory.push(npc.id);
   return {
     output: {
       desc: "You take " + state.npc[npc.id].label + "."
     },
-    update: {
-      inventory: [[+1, npc.id]]
-    }
+    update: state
   }
 }
