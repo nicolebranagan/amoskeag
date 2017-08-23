@@ -44,24 +44,23 @@ class Game():
   def _post(self, url, data):
     r = requests.post(server + url, headers = {
       'Authorization': 'Bearer ' + self.token
-    }, data=data).json()
+    }, json=data).json()
     if ('success' in r):
-      return r
-    else:
-      raise IOError()
+      if ('output' in r):
+        return r['output']
+      raise IOError(r["message"])
+    raise IOError("Unacceptable body")
   
   def __say(self, data):
     labels = [e["label"] for e in data]
     return ', '.join(labels)
-  
-  def __go(self, data, dest):
+
+  def __gopost(self, data, dest, label):
     try:
-      url = next(i["href"] for i in data if i["label"] == dest)
+      target = next(i["id"] for i in data if i["label"] == dest)
     except StopIteration:
       return "Can't find " + dest
-    r = self._get(
-      url
-    )
+    r = self._post('/game/'+label, {"id": target})
     if ("talk" in r):
       self.talks = r["talk"]
     return r["desc"]
@@ -72,7 +71,7 @@ class Game():
     self.looks = r["look"]
     self.looks.extend(
       ({"label" : e["label"],
-        "href" : e["look"]} for e in self.inventory)
+        "id" : e["look"]} for e in self.inventory)
     )
     self.talks = r["talk"]
     self.gets = r["get"]
@@ -89,13 +88,13 @@ class Game():
     return self.__say(self.gets)
 
   def talk_to(self, to):
-    return self.__go(self.talks, to)
+    return self.__gopost(self.talks, to, "talk")
   
   def lookat_to(self, to):
-    return self.__go(self.looks, to)
+    return self.__gopost(self.looks, to, "look")
 
   def get_to(self, to):
-    return self.__go(self.gets, to)
+    return self.__gopost(self.gets, to, "get")
   
   def move(self, dest):
     try:
@@ -103,13 +102,24 @@ class Game():
     except StopIteration:
       return "Can't go there"
     r = self._post('/game/move', {"exit":xit})
-    if (r["success"] == True):
+    if (r == {}):
       return self.look()
     else:
       if ("message" in r):
         return r["message"]
       return "Can't go there."
   
+  def use(self, id, on):
+    try:
+      item = next(i["id"] for i in self.looks if i["label"] == id)
+      target = next(i["id"] for i in self.looks if i["label"] == on)
+    except StopIteration:
+      return "Can't do that"
+    
+    r = self._post('/game/use', {"id":item, "target":target})
+    print(r)
+    return r["message"]
+
   def status(self):
     r = self._get('/game/status')
     self.inventory = r["inventory"]
@@ -142,6 +152,8 @@ while(cond):
       game.status()
     elif (text.startswith("status")):
       print(game.status())
+    elif (text.startswith("!")):
+      eval(text[1:])
     else:
       print(game.look())
   except IOError as e:

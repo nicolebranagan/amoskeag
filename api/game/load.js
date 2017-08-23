@@ -70,6 +70,7 @@ async function load() {
   }
 
   const npc_ids = {};
+  const new_npcs = [];
   for (const index in worldfile.npc) {
     const npc = worldfile.npc[index];
     npc_ids[npc.name] = index;
@@ -86,6 +87,19 @@ async function load() {
         }
       }
     )
+    new_npcs[index] = new_npc;
+  }
+  for (const index in worldfile.npc) {
+    const npc = worldfile.npc[index];
+    const new_npc = new_npcs[index];
+    if (npc.use) {
+      new_npc.use = npc.use.map(
+        (e) => ({
+          target: npc_ids[e.target],
+          dialogue: dialogue_ids[get_dialogue(e.dialogue)]
+        })
+      )
+    }
     await new_npc.save();
   }
 

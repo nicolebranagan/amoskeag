@@ -63,7 +63,7 @@ exports.status = function(req, res) {
 };
 
 exports.look_at = function(req, res) {
-  if (!req.params.lookId)
+  if (!req.body.id)
     res.status(422).json(
       {
         message: "Who are you looking at?",
@@ -72,7 +72,7 @@ exports.look_at = function(req, res) {
     );
   else
     takeAction(req.user.save, res,
-      (state) => game.look_at(state, req.params.lookId)
+      (state) => game.look_at(state, req.body.id)
     )
 }
 
@@ -91,7 +91,7 @@ exports.move = function(req, res) {
 }
 
 exports.talk = function(req, res) {
-  if (!req.params.talkId)
+  if (!req.body.id)
     res.status(422).json(
       {
         message: "Who are you talking to?",
@@ -100,12 +100,12 @@ exports.talk = function(req, res) {
     );
   else
     takeAction(req.user.save, res,
-      (state) => game.talk(state, req.params.talkId)
+      (state) => game.talk(state, req.body.id)
     )
 }
 
 exports.get = function(req, res) {
-  if (!req.params.itemId)
+  if (!req.body.id)
     res.status(422).json(
       {
         message: "Who are you looking at?",
@@ -114,6 +114,20 @@ exports.get = function(req, res) {
     );
   else
     takeAction(req.user.save, res,
-      (state) => game.get(state, req.params.itemId)
+      (state) => game.get(state, req.body.id)
+    )
+}
+
+exports.use = function(req, res) {
+  if (!req.body.id && !req.body.target)
+    res.status(422).json(
+      {
+        message: "What are you using, and on what?",
+        success: false,
+      }
+    );
+  else
+    takeAction(req.user.save, res,
+      (state) => game.use(state, req.body.id, req.body.target)
     )
 }

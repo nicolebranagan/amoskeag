@@ -47,13 +47,13 @@ exports.look = async function(state) {
               .map(e => ({label: e.label, exit: e.dest})),
       look: npcdata
               .filter(e => e.desc !== undefined)
-              .map(e => ({label: e.label, href: "/game/look/" + e.guid})),
+              .map(e => ({label: e.label, id: e.guid})),
       talk: npcdata
               .filter(e => e.dialogue !== undefined)
-              .map(e => ({label: e.label, href: "/game/talk/" + e.dialogue})),
+              .map(e => ({label: e.label, id: e.dialogue})),
       get: npcdata
               .filter(e => e.carryable)
-              .map(e => ({label: e.label, href: "/game/get/" + e.guid})),
+              .map(e => ({label: e.label, id: e.guid})),
     }
   }
 }
@@ -105,7 +105,7 @@ exports.talk = async function(state, id) {
     talk = dialogue.children.map(
       e => ({
         "label": e.label,
-        "href": "/game/talk/" + e.guid
+        "id": e.guid
       })
     )
   state.seen_convo.push(dialogue.id);
@@ -123,7 +123,7 @@ exports.status = async function(state) {
   return { 
     output: {
       inventory: npcdata
-              .map(e => ({label: state.npc[e.id].label, look: "/game/look/" + e.guid})),
+              .map(e => ({label: state.npc[e.id].label, look: e.guid})),
     }
   }
 }
@@ -141,4 +141,19 @@ exports.get = async function(state, target) {
     },
     update: state
   }
+}
+
+exports.use = async function(state, id, on) {
+  const item = await Npc.findOne({guid: id});
+  const target = await Npc.findOne({guid: on});
+
+  if (!item || !(state.player.inventory.includes(item.id)))
+    throw "You don't have that"
+  if (!target || state.npc[target.id].room !== state.player.room)
+    throw "That's not here."
+
+  const use = item.use.find(e => e.target === target.id);
+  if (!use)
+    throw "Nothing happens."
+  throw "Unimplemented."
 }

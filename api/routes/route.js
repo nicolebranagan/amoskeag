@@ -41,21 +41,22 @@ module.exports = function(app) {
 
   app.route('/game/look')
     .get(gameController.look)
-  
-  app.route('/game/look/:lookId')
-    .get(gameController.look_at)
+    .post(gameController.look_at)
 
   app.route('/game/move')
     .post(gameController.move)
 
-  app.route('/game/talk/:talkId')
-    .get(gameController.talk)
+  app.route('/game/talk')
+    .post(gameController.talk)
 
   app.route('/game/status')
     .get(gameController.status)
 
-  app.route('/game/get/:itemId')
-    .get(gameController.get)
+  app.route('/game/get')
+    .post(gameController.get)
+
+  app.route('/game/use')
+    .post(gameController.use)
 
   app.all('*', function(req, res) {
     res.status(404).json({

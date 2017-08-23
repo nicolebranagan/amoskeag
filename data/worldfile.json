@@ -39,10 +39,10 @@
       "initial" : {
         "room": "room1"
       },
-      "use" : {
+      "use" : [{
         "target" : "man1",
         "dialogue" : "void-man1"
-      }
+      }]
     }
   ],
   "dialogue" : [

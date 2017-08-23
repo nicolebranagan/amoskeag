@@ -17,6 +17,16 @@ const NpcSchema = new Schema({
   dialogue: {
     type: String
   },
+  use: [
+    {
+      target: {
+        type: Number,
+      },
+      dialgoue: {
+        type: String
+      }
+    }
+  ],
   initial: {
     label: {
       type: String,
