@@ -161,8 +161,6 @@ while(cond):
         print("On what?")
       else:
         print(game.use(cmd[0], cmd[1]))
-    elif (text.startswith("!")):
-      print(eval(text[1:]))
     elif (text == ""):
       print(game.look())
     else:
