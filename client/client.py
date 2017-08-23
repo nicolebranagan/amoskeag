@@ -117,8 +117,8 @@ class Game():
       return "Can't do that"
     
     r = self._post('/game/use', {"id":item, "target":target})
-    print(r)
-    return r["message"]
+    self.talks = r["talk"]
+    return r["desc"]
 
   def status(self):
     r = self._get('/game/status')
@@ -153,7 +153,7 @@ while(cond):
     elif (text.startswith("status")):
       print(game.status())
     elif (text.startswith("!")):
-      eval(text[1:])
+      print(eval(text[1:]))
     else:
       print(game.look())
   except IOError as e:

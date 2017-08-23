@@ -96,9 +96,11 @@ exports.talk = async function(state, id) {
       (dialogue.parent !== undefined && !(dialogue.parent in state.seen_convo)))
     throw "Who are you talking to?"
 
-  const npc = await Npc.findOne({id: dialogue.npc})
-  if (!npc || state.npc[npc.id].room !== state.player.room)
-    throw "I don't see anyone here"
+  if (dialogue.npc !== undefined) {
+    const npc = await Npc.findOne({id: dialogue.npc})
+    if (!npc || state.npc[npc.id].room !== state.player.room)
+      throw "I don't see anyone here"
+  }
 
   let talk = [];
   if (dialogue.children)
@@ -135,6 +137,7 @@ exports.get = async function(state, target) {
   if (!state.npc[npc.id].carryable)
     throw "You can't get that."
   state.player.inventory.push(npc.id);
+  state.npc[npc.id].room = undefined;
   return {
     output: {
       desc: "You take " + state.npc[npc.id].label + "."
@@ -155,5 +158,5 @@ exports.use = async function(state, id, on) {
   const use = item.use.find(e => e.target === target.id);
   if (!use)
     throw "Nothing happens."
-  throw "Unimplemented."
+  return exports.talk(state, use.dialogue);
 }
