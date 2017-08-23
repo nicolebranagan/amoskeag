@@ -152,9 +152,15 @@ while(cond):
       game.status()
     elif (text.startswith("status")):
       print(game.status())
+    elif (text.startswith("use ")):
+      cmd = text[4:].split(" on ")
+      if (len(cmd) < 2):
+        print("On what?")
+      print(game.use(cmd[0], cmd[1]))
     elif (text.startswith("!")):
       print(eval(text[1:]))
     else:
       print(game.look())
   except IOError as e:
     print("Error: " + str(e))
+    

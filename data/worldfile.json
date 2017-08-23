@@ -74,7 +74,7 @@
     },
     {
       "name": "void-man1",
-      "text": "You use the void on the man, and the void and the man are one!",
+      "text": "You use the void on the man, and the void and the man are one! You pocket the void, slightly confused. The void is even moreso.",
       "effect": [{
         "command": "remove",
         "target": "man1"

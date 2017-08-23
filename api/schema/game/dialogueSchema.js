@@ -21,6 +21,20 @@ const DialogueSchema = new Schema({
   parent: {
     type: Number
   },
+  effect: [
+    {
+      command: {
+        type: String,
+        required: true
+      },
+      target: {
+        type: Number
+      },
+      value: {
+        type: String
+      }
+    }
+  ],
   children: [
     {
       label: {

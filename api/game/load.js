@@ -118,6 +118,15 @@ async function load() {
           guid: dialogue_ids[get_dialogue(e.id)]
         })
       )
+    if (dialogue.effect) {
+      new_dialogue.effect = dialogue.effect.map(
+        (e) => ({
+          command: e.command,
+          target: npc_ids[e.target],
+          value: e.value
+        })
+      )
+    }
     await new_dialogue.save();
   }
 }

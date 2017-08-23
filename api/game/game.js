@@ -5,6 +5,7 @@ const mongoose = require('mongoose'),
   Npc = mongoose.model('Npcs'),
   Dialogue = mongoose.model('Dialogues');
 const helper = require("./helper");
+const command = require("./command.js")
 
 exports.initialState = async function() {
   const npcdata = await Npc.find({});
@@ -101,6 +102,9 @@ exports.talk = async function(state, id) {
     if (!npc || state.npc[npc.id].room !== state.player.room)
       throw "I don't see anyone here"
   }
+
+  if (dialogue.effect)
+    state = dialogue.effect.reduce((a, e) => (a = command(a, e)), state)
 
   let talk = [];
   if (dialogue.children)
