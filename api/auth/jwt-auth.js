@@ -1,10 +1,10 @@
 var passport = require("passport");  
 var passportJWT = require("passport-jwt");  
-var cfg = require("../../config.js");  
+var cfg = require("../../config.js").jwt;  
 var ExtractJwt = passportJWT.ExtractJwt;  
 var Strategy = passportJWT.Strategy;  
 var params = {  
-    secretOrKey: cfg.jwtSecret,
+    secretOrKey: cfg.secret,
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
 };
 
@@ -12,6 +12,7 @@ module.exports = function() {
     var strategy = new Strategy(params, function(payload, done) {
         if (payload.save) {
             return done(null, {
+                user: payload.user,
                 save: payload.save
             });
         } else {
@@ -24,7 +25,7 @@ module.exports = function() {
             return passport.initialize();
         },
         authenticate: function() {
-            return passport.authenticate("jwt", cfg.jwtSession);
+            return passport.authenticate("jwt", cfg.session);
         }
     };
 };

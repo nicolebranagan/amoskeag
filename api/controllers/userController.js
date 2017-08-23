@@ -29,7 +29,7 @@ exports.get_anonymous_token = function(req, res) {
   const payload = {
     save: save_id
   };
-  const token = jwt.encode(payload, cfg.jwtSecret);
+  const token = jwt.encode(payload, cfg.jwt.secret);
   res.json({
       token: token,
       anonymous: true,
@@ -63,9 +63,10 @@ exports.get_token = function(req, res) {
     function(same) {
       if (same) {
         var payload = {
+          user: user.id,
           save: user.save_id
         };
-        var token = jwt.encode(payload, cfg.jwtSecret);
+        var token = jwt.encode(payload, cfg.jwt.secret);
         res.json({
             token: token,
             anonymous: false,
@@ -125,10 +126,11 @@ exports.create = function(req, res) {
   const password = req.body.password;
   const save_id = uuidv4();
   new_game(save_id);
-  bcrypt.hash(password, 10)
+  bcrypt.hash(password, cfg.bcrypt.rounds)
   .then(
     function(hash) {
       const new_user = new User({
+        id: uuidv4(),
         name: name,
         password: hash,
         save_id: save_id

@@ -27,8 +27,8 @@ async function load() {
       desc: room.desc,
       exits: Object.keys(room.exits).map(
         (e) => ({
-          label: e,
-          dest: room.exits[e]
+          guid: uuidv4(),
+          label: e
         })
       )
     })
@@ -39,7 +39,7 @@ async function load() {
     const room = worldfile.rooms[index];
     const new_room = new_rooms[index];
     for (const exit of new_room.exits)
-      exit.dest = room_guids[room_ids[exit.dest]];
+      exit.dest = room_ids[room.exits[exit.label]];
     await new_room.save();
   }
 
@@ -124,10 +124,9 @@ async function load() {
           command: e.command,
           target: npc_ids[e.target],
           value: e.value
-        })
-      )
+        }))
+      await new_dialogue.save();
     }
-    await new_dialogue.save();
   }
 }
 

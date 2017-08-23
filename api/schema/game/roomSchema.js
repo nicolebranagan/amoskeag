@@ -15,12 +15,16 @@ const RoomSchema = new Schema({
   },
   exits: [
     {
+      guid: {
+        type: String,
+        required: true,
+      },
       label: {
         type: String,
         required: true,
       },
       dest: {
-        type: String,
+        type: Number,
         required: true
       }
     }

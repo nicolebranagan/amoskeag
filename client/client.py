@@ -129,6 +129,7 @@ class Game():
 cond = True
 game = Game(get_token())
 time.sleep(0.5)
+print("Connected to Amoskeag server at " + server + " with token " + game.token)
 print(game.look())
 while(cond):
   text = input('$ ')

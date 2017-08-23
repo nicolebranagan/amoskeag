@@ -43,7 +43,7 @@ async function view(state, room) {
     return { 
         desc: room.desc + helper.npcString(npcdata.map(e => e.label)),
         exit: exits
-                .map(e => ({label: e.label, id: e.dest})),
+                .map(e => ({label: e.label, id: e.guid})),
         look: npcdata
                 .filter(e => e.desc !== undefined)
                 .map(e => ({label: e.label, id: e.guid})),
@@ -81,11 +81,11 @@ exports.look_at = async function(state, target) {
 exports.move = async function(state, direction) {
   const room = await Room.findOne({id: state.player.room});
   const exit = room.exits.filter(
-    (e) => e.dest == direction
+    (e) => e.guid === direction
   )
-  if (exit.length == 0)
+  if (exit.length === 0)
     throw "No such direction."
-  const new_room = await Room.findOne({guid: direction})
+  const new_room = await Room.findOne({id: exit[0].dest})
   if (!new_room)
     throw "No such room."
   state.player.room = new_room.id;
