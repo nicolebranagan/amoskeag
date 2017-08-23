@@ -2,13 +2,17 @@
 # CLIent: Barebones user client for Amoskeag
 #
 # Commands:
-# look: Lists everything you can look at
+# look: Lists everything you can look at (stuff in stage, and your inventory)
 # look <at>: Looks at <at>
+# move: Lists where you can move to
 # move <dir>: Moves to that location
 # talk: List every possible talk command
 # talk <cmd>: Talks to that person, or says that response if already talking
+# get: List everything you can get
+# get <obj>: Gets that object
+# status: Lists your current inventory
+# Blank command: Displays room info again
 # exit: Quits
-# All other commands simply display the room information (and reset conversations)
 
 import requests
 import json
@@ -48,8 +52,24 @@ class Game():
     if ('success' in r):
       if ('output' in r):
         return r['output']
-      raise IOError(r["message"])
-    raise IOError("Unacceptable body")
+      if ('message' in r):
+        raise IOError(r["message"])
+    raise IOError(str(r))
+
+  def __update(self, r):
+    if ("talk" in r):
+      self.talks = r["talk"]
+    if ("exit" in r):
+      self.exits = r["exit"]
+    if ("look" in r):
+      self.looks = r["look"]
+      self.looks.extend(
+        ({"label" : e["label"],
+          "id" : e["look"]} for e in self.inventory)
+      )
+    if ("get" in r):
+      self.gets = r["get"]
+    return r["desc"]
   
   def __say(self, data):
     labels = [e["label"] for e in data]
@@ -61,22 +81,11 @@ class Game():
     except StopIteration:
       return "Can't find " + dest
     r = self._post('/game/'+label, {"id": target})
-    if ("talk" in r):
-      self.talks = r["talk"]
-    return r["desc"]
+    return self.__update(r)
     
   def look(self):
     r = self._get('/game/look')
-    self.exits = r["exit"]
-    self.looks = r["look"]
-    self.looks.extend(
-      ({"label" : e["label"],
-        "id" : e["look"]} for e in self.inventory)
-    )
-    self.talks = r["talk"]
-    self.gets = r["get"]
-
-    return r["desc"] + "\n\nExits are " + ', '.join([e["label"] for e in self.exits])
+    return self.__update(r)
   
   def talk(self):
     return self.__say(self.talks)
@@ -86,6 +95,9 @@ class Game():
   
   def get(self):
     return self.__say(self.gets)
+  
+  def move(self):
+    return self.__say(self.exits)
 
   def talk_to(self, to):
     return self.__gopost(self.talks, to, "talk")
@@ -96,18 +108,8 @@ class Game():
   def get_to(self, to):
     return self.__gopost(self.gets, to, "get")
   
-  def move(self, dest):
-    try:
-      xit = next(i["exit"] for i in self.exits if i["label"] == dest)
-    except StopIteration:
-      return "Can't go there"
-    r = self._post('/game/move', {"exit":xit})
-    if (r == {}):
-      return self.look()
-    else:
-      if ("message" in r):
-        return r["message"]
-      return "Can't go there."
+  def move_to(self, to):
+    return self.__gopost(self.exits, to, "move")
   
   def use(self, id, on):
     try:
@@ -139,6 +141,8 @@ while(cond):
       print(game.talk())
     elif (text == "look"):
       print(game.lookat())
+    elif (text == "move"):
+      print(game.move())
     elif (text == "get"):
       print(game.get())
     elif (text.startswith("look ")):
@@ -146,7 +150,7 @@ while(cond):
     elif (text.startswith("talk ")):
       print(game.talk_to(text[5:]))
     elif (text.startswith("move ")):
-      print(game.move(text[5: ]))
+      print(game.move_to(text[5: ]))
     elif (text.startswith("get ")):
       print(game.get_to(text[4: ]))
       game.status()
@@ -159,8 +163,9 @@ while(cond):
       print(game.use(cmd[0], cmd[1]))
     elif (text.startswith("!")):
       print(eval(text[1:]))
-    else:
+    elif (text == ""):
       print(game.look())
+    else:
+      print("I don't understand that command.")
   except IOError as e:
     print("Error: " + str(e))
-    

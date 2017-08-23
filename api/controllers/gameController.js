@@ -77,7 +77,7 @@ exports.look_at = function(req, res) {
 }
 
 exports.move = function(req, res) {
-  if (!req.body.exit)
+  if (!req.body.id)
     res.status(422).json(
       {
         message: "Where are you moving to?",
@@ -86,7 +86,7 @@ exports.move = function(req, res) {
     );
   else
     takeAction(req.user.save, res,
-      (state) => game.move(state, req.body.exit)
+      (state) => game.move(state, req.body.id)
     )
 }
 

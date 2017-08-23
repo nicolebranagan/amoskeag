@@ -25,11 +25,10 @@ exports.initialState = async function() {
   }
 }
 
-exports.look = async function(state) {
-  const room = await Room.findOne({id: state.player.room});
+async function view(state, room) {
   const exits = room.exits;
   const npcs = state.npc
-    .filter(e => e.room == state.player.room)
+    .filter(e => e.room == room.id)
     .map(e => e.id);
   const npcdata = (await Npc.find({id: {$in: npcs}}))
     .map(
@@ -41,21 +40,26 @@ exports.look = async function(state) {
         desc: e.desc
       })
     )
-  return { 
-    output: {
-      desc: room.desc + helper.npcString(npcdata.map(e => e.label)),
-      exit: exits
-              .map(e => ({label: e.label, exit: e.dest})),
-      look: npcdata
-              .filter(e => e.desc !== undefined)
-              .map(e => ({label: e.label, id: e.guid})),
-      talk: npcdata
-              .filter(e => e.dialogue !== undefined)
-              .map(e => ({label: e.label, id: e.dialogue})),
-      get: npcdata
-              .filter(e => e.carryable)
-              .map(e => ({label: e.label, id: e.guid})),
+    return { 
+        desc: room.desc + helper.npcString(npcdata.map(e => e.label)),
+        exit: exits
+                .map(e => ({label: e.label, id: e.dest})),
+        look: npcdata
+                .filter(e => e.desc !== undefined)
+                .map(e => ({label: e.label, id: e.guid})),
+        talk: npcdata
+                .filter(e => e.dialogue !== undefined)
+                .map(e => ({label: e.label, id: e.dialogue})),
+        get: npcdata
+                .filter(e => e.carryable)
+                .map(e => ({label: e.label, id: e.guid})),
     }
+}
+
+exports.look = async function(state) {
+  const room = await Room.findOne({id: state.player.room});
+  return {
+    output: await view(state, room)
   }
 }
 
@@ -86,7 +90,7 @@ exports.move = async function(state, direction) {
     throw "No such room."
   state.player.room = new_room.id;
   return {
-    output: { },
+    output: await view(state, new_room),
     update: state
   }
 }
