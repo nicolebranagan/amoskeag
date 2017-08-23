@@ -119,8 +119,7 @@ class Game():
       return "Can't do that"
     
     r = self._post('/game/use', {"id":item, "target":target})
-    self.talks = r["talk"]
-    return r["desc"]
+    return self.__update(r)
 
   def status(self):
     r = self._get('/game/status')
@@ -160,7 +159,8 @@ while(cond):
       cmd = text[4:].split(" on ")
       if (len(cmd) < 2):
         print("On what?")
-      print(game.use(cmd[0], cmd[1]))
+      else:
+        print(game.use(cmd[0], cmd[1]))
     elif (text.startswith("!")):
       print(eval(text[1:]))
     elif (text == ""):
