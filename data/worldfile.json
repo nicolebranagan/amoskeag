@@ -3,16 +3,26 @@
     {
       "name" : "room1",
       "desc" : "You are in a plain void. You can't comprehend what the world is like.",
-      "exits" : {
-        "NORTH": "room2"
-      }
+      "exits" : [
+        {
+          "label" : "NORTH",
+          "dest" : "room2",
+          "condition" : {
+            "command" : "has",
+            "target" : "void"
+          }
+        }
+      ]
     },
     {
       "name" : "room2",
       "desc" : "You're in another room. This one is just as incomprehensible, but calming.",
-      "exits" : {
-        "SOUTH" : "room1"
-      }
+      "exits" : [
+        {
+          "label" : "SOUTH",
+          "dest" : "room1"
+        }
+      ]
     }
   ],
   "npc" : [

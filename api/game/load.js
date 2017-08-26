@@ -25,10 +25,10 @@ async function load() {
       id: index,
       guid: guid,
       desc: room.desc,
-      exits: Object.keys(room.exits).map(
+      exits: room.exits.map(
         (e) => ({
           guid: uuidv4(),
-          label: e
+          label: e.label
         })
       )
     })
@@ -38,8 +38,10 @@ async function load() {
     const guid = uuidv4();
     const room = worldfile.rooms[index];
     const new_room = new_rooms[index];
-    for (const exit of new_room.exits)
-      exit.dest = room_ids[room.exits[exit.label]];
+    console.log(new_room.exits);
+    new_room.exits.forEach((exit, index) =>{
+      exit.dest = room_ids[room.exits[index].dest];
+    });
     await new_room.save();
   }
 

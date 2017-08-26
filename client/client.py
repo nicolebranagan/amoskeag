@@ -81,6 +81,8 @@ class Game():
     except StopIteration:
       return "Can't find " + dest
     r = self._post('/game/'+label, {"id": target})
+    if (label is "move"):
+      r = self._get('/game/look')
     return self.__update(r)
     
   def look(self):

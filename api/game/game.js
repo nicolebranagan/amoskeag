@@ -90,7 +90,7 @@ exports.move = async function(state, direction) {
     throw "No such room."
   state.player.room = new_room.id;
   return {
-    output: await view(state, new_room),
+    output: {},
     update: state
   }
 }
