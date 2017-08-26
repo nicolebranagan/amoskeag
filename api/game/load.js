@@ -74,7 +74,7 @@ async function load() {
         dialogue: dialogue_ids[get_dialogue(npc.dialogue)],
         initial: {
           label: npc.label,
-          room: room_ids[npc.initial.room],
+          room: room_ids[npc.room],
           carryable: npc.carryable
         }
       }
@@ -134,8 +134,8 @@ async function load() {
           target: npc_ids[e.target],
           value: e.value
         }))
-      await new_dialogue.save();
     }
+    await new_dialogue.save();
   }
 }
 

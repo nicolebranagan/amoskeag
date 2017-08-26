@@ -31,24 +31,18 @@
       "label" : "a man",
       "desc" : "It's hard to tell if they're really a man, or something else. Perhaps they don't exist at all.",
       "dialogue" : "man1",
-      "initial" : {
-        "room" : "room1"
-      }
+      "room" : "room1"
     },
     {
       "name" : "man2",
-      "label" : "a denizen of the void",
-      "initial" : {
-      }
+      "label" : "a denizen of the void"
     },
     {
       "name" : "void",
       "label" : "the void",
       "carryable" : true,
       "desc" : "The void looks back at you, confused.",
-      "initial" : {
-        "room": "room1"
-      },
+      "room": "room1",
       "use" : [{
         "target" : "man1",
         "dialogue" : "void-man1"
