@@ -34,16 +34,6 @@ async function load() {
     })
     new_rooms[index] = new_room;
   }
-  for (const index in worldfile.rooms) {
-    const guid = uuidv4();
-    const room = worldfile.rooms[index];
-    const new_room = new_rooms[index];
-    console.log(new_room.exits);
-    new_room.exits.forEach((exit, index) =>{
-      exit.dest = room_ids[room.exits[index].dest];
-    });
-    await new_room.save();
-  }
 
   const dialogue_ids = [];
   const dialogue_id_from_name = {};
@@ -105,8 +95,25 @@ async function load() {
     await new_npc.save();
   }
 
-  // Certain updates to dialogue require knowing information about the NPC loading, and the
-  // NPC loading requires information about dialogue. Hence, this part comes after the NPC.
+  // Certain updates to dialogue and rooms require knowing information about the NPC loading,a
+  // and the NPC loading requires information about dialogue and rooms.
+  // Hence, this part comes after the NPC.
+  for (const index in worldfile.rooms) {
+    const guid = uuidv4();
+    const new_room = new_rooms[index];
+    const room = worldfile.rooms[index];
+    new_room.exits.forEach((new_exit, index) =>{
+      const exit = room.exits[index];
+      new_exit.dest = room_ids[exit.dest];
+      if (exit.condition)
+        new_exit.condition = {
+          command: exit.condition.command,
+          target: npc_ids[exit.condition.target],
+          value: exit.condition.value
+        }
+    });
+    await new_room.save();
+  }
   for (const index in worldfile.dialogue) {
     const dialogue = worldfile.dialogue[index];
     const new_dialogue = new_dialogues[index];

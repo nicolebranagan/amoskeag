@@ -5,7 +5,8 @@ const mongoose = require('mongoose'),
   Npc = mongoose.model('Npcs'),
   Dialogue = mongoose.model('Dialogues');
 const helper = require("./helper");
-const command = require("./command.js")
+const effect = require("./effect.js")
+const condition = require("./condition.js")
 
 exports.initialState = async function() {
   const npcdata = await Npc.find({});
@@ -26,7 +27,8 @@ exports.initialState = async function() {
 }
 
 async function view(state, room) {
-  const exits = room.exits;
+  const exits = room.exits
+    .filter( e => (!e.condition) || (condition(state, e.condition)))
   const npcs = state.npc
     .filter(e => e.room == room.id)
     .map(e => e.id);
@@ -83,7 +85,7 @@ exports.move = async function(state, direction) {
   const exit = room.exits.filter(
     (e) => e.guid === direction
   )
-  if (exit.length === 0)
+  if (exit.length === 0 || (exit.condition && !condition(state, exit.condition)))
     throw "No such direction."
   const new_room = await Room.findOne({id: exit[0].dest})
   if (!new_room)
@@ -108,7 +110,7 @@ exports.talk = async function(state, id) {
   }
 
   if (dialogue.effect)
-    state = dialogue.effect.reduce((a, e) => (a = command(a, e)), state)
+    state = dialogue.effect.reduce((a, e) => (a = effect(a, e)), state)
 
   let talk = [];
   if (dialogue.children)

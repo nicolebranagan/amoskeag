@@ -108,7 +108,9 @@ class Game():
     return self.__gopost(self.looks, to, "look")
 
   def get_to(self, to):
-    return self.__gopost(self.gets, to, "get")
+    out = self.__gopost(self.gets, to, "get")
+    self.look()
+    return out
   
   def move_to(self, to):
     return self.__gopost(self.exits, to, "move")

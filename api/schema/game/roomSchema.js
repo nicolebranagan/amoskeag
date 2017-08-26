@@ -26,6 +26,17 @@ const RoomSchema = new Schema({
       dest: {
         type: Number,
         required: true
+      },
+      condition: {
+        command: {
+          type: String
+        },
+        target: {
+          type: Number
+        },
+        value: {
+          type: String
+        }
       }
     }
   ]
