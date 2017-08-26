@@ -80,7 +80,7 @@
       "name": "respond",
       "npc" : "man1",
       "parent": "man1",
-      "text": "Oh cool"
+      "text": "Oh cool. Since you love me, I'll let you know that a true master of the void can move NORTH."
     },
     {
       "name": "void-man1",
