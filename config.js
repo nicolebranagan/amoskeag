@@ -11,5 +11,9 @@ module.exports = {
   },
   bcrypt: {
     rounds: 10
-  }
+  },
+  /**
+   * Place the path to your worldfile here. Path is relative to amoskeag/api/game/load
+   */
+  worldfile: "../../data/worldfile"
 };

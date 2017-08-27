@@ -1,6 +1,6 @@
 'use strict';
 
-const worldfile = require("../../data/worldfile");
+const worldfile = require(require('../../config').worldfile);
 const uuidv4 = require('uuid/v4');
 const mongoose = require('mongoose'),
   Room = mongoose.model('Rooms'),
