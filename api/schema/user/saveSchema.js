@@ -41,7 +41,7 @@ const SaveSchema = new Schema({
       }
     ],
     seen_convo: [
-      {type: String}
+      {type: Number}
     ]
   }
 });

@@ -100,7 +100,7 @@ exports.move = async function(state, direction) {
 exports.talk = async function(state, id) {
   const dialogue = await Dialogue.findOne({guid : id});
   if ((dialogue == null) ||
-      (dialogue.parent !== undefined && !(dialogue.parent in state.seen_convo)))
+      (dialogue.parent !== undefined && !(state.seen_convo.includes(dialogue.parent))))
     throw "Who are you talking to?"
 
   if (dialogue.npc !== undefined) {
@@ -120,7 +120,8 @@ exports.talk = async function(state, id) {
         "id": e.guid
       })
     )
-  state.seen_convo.push(dialogue.id);
+  if (!state.seen_convo.includes(dialogue.id))
+    state.seen_convo.push(dialogue.id);
   return {
     output: {
       desc: dialogue.text,
