@@ -164,14 +164,20 @@ exports.get = async function(state, target) {
 
 exports.use = async function(state, id, on) {
   const item = await Npc.findOne({guid: id});
-  const target = await Npc.findOne({guid: on});
 
   if (!item || !(state.player.inventory.includes(item.id)))
     throw "You don't have that"
-  if (!target || state.npc[target.id].room !== state.player.room)
-    throw "That's not here."
+  
+  let use;
+  if (on) {
+    const target = await Npc.findOne({guid: on});
+    if (!target || state.npc[target.id].room !== state.player.room)
+      throw "That's not here."
+    use = item.use.find(e => e.target === target.id);
+  } else {
+    use = item.use.find(e => e.target === undefined);
+  } 
 
-  const use = item.use.find(e => e.target === target.id);
   if (!use)
     throw "Nothing happens."
   return exports.talk(state, use.dialogue);

@@ -131,6 +131,9 @@ class Game():
     r = self._post('/game/use', {"id":item, "target":target})
     return self.__update(r)
 
+  def consume(self, to):
+    return self.__gopost(self.looks, to, "use")
+
   def status(self):
     r = self._get('/game/status')
     self.inventory = r["inventory"]
@@ -169,7 +172,7 @@ while(cond):
     elif (text.startswith("use ")):
       cmd = text[4:].split(" on ")
       if (len(cmd) < 2):
-        print("On what?")
+        print(game.consume(cmd[0]))
       else:
         print(game.use(cmd[0], cmd[1]))
     elif (text == ""):

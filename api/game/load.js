@@ -88,7 +88,7 @@ async function load() {
     if (npc.use) {
       new_npc.use = npc.use.map(
         (e) => ({
-          target: npc_ids[e.target],
+          target: e.target ? npc_ids[e.target] : undefined,
           dialogue: dialogue_ids[get_dialogue(e.dialogue)]
         })
       )

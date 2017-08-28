@@ -23,7 +23,8 @@ const NpcSchema = new Schema({
         type: Number,
       },
       dialogue: {
-        type: String
+        type: String,
+        required: true
       }
     }
   ],

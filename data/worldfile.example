@@ -48,6 +48,9 @@
         {
           "target": "man1",
           "dialogue": "void-man1"
+        },
+        {
+          "dialogue": "void"
         }
       ]
     }
@@ -86,13 +89,17 @@
     },
     {
       "name": "void-man1",
-      "text": "You use the void on the man, and the void and the man are one! You pocket the void, slightly confused. The void is even moreso.",
+      "text": "You use the void on the man, and the void and the man are one! You pocket the void, slightly confused. The void is even more confused than you are.",
       "effect": [
         {
           "command": "remove",
           "target": "man1"
         }
       ]
+    },
+    {
+      "name": "void",
+      "text": "You use the void. The void uses you back. You both agree to pretend it didn't happen."
     }
   ]
 }
