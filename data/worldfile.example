@@ -29,20 +29,22 @@
     {
       "name": "man1",
       "label": "a man",
-      "desc": "It's hard to tell if they're really a man, or something else. Perhaps they don't exist at all.",
+      "desc": "look-man",
       "dialogue": "man1",
       "room": "room1"
     },
     {
       "name": "man2",
       "label": "a denizen of the void",
+      "desc": "",
       "carryable": false,
+      "use": ""
     },
     {
       "name": "void",
       "label": "the void",
       "carryable": true,
-      "desc": "The void looks back at you, confused.",
+      "desc": "look-void",
       "room": "room1",
       "use": [
         {
@@ -67,6 +69,7 @@
           "condition": {
             "command": "has",
             "target": "void",
+            "value": ""
           }
         },
         {
@@ -100,6 +103,14 @@
     {
       "name": "void",
       "text": "You use the void. The void uses you back. You both agree to pretend it didn't happen."
+    },
+    {
+      "name": "look-man",
+      "text": "It's hard to tell if they're really a man, or something else. Perhaps they don't exist at all."
+    },
+    {
+      "name": "look-void",
+      "text": "The void looks back at you, confused."
     }
   ]
 }

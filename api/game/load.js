@@ -71,7 +71,7 @@ async function load() {
       {
         id : index,
         guid: uuidv4(),
-        desc: npc.desc,
+        desc: dialogue_ids[get_dialogue(npc.desc)],
         dialogue: dialogue_ids[get_dialogue(npc.dialogue)],
         initial: {
           label: npc.label,

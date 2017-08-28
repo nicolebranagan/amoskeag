@@ -70,12 +70,10 @@ exports.look_at = async function(state, target) {
   if (npc) {
     if (state.npc[npc.id].room !== state.player.room &&
         !(state.player.inventory.includes(npc.id)))
-      throw "I don't see anyone here"
-    return { 
-      output: {
-        desc: npc.desc
-      }
-    }
+      throw "I don't see that here"
+    if (!npc.desc)
+      throw "Nothing interesting here."
+    return exports.talk(state, npc.desc);
   }
   throw "That isn't here."
 }
