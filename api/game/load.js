@@ -50,6 +50,7 @@ async function load() {
         guid: id,
         npc: dialogue.npc,
         text: dialogue.text,
+        endgame: dialogue.endgame ? true : false,
       }
     )
     new_dialogues[index] = new_dialogue;

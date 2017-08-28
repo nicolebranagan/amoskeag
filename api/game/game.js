@@ -121,12 +121,16 @@ exports.talk = async function(state, id) {
           "label": e.label,
           "id": e.guid
         }))
+  
   if (!state.seen_convo.includes(dialogue.id))
     state.seen_convo.push(dialogue.id);
+  if (dialogue.endgame)
+    state.endgame = dialogue.id;
   return {
     output: {
       desc: dialogue.text,
-      talk: talk
+      talk: dialogue.endgame ? undefined : talk,
+      endgame: dialogue.endgame ? true : undefined
     },
     update: state
   }
@@ -171,4 +175,14 @@ exports.use = async function(state, id, on) {
   if (!use)
     throw "Nothing happens."
   return exports.talk(state, use.dialogue);
+}
+
+exports.endgame = async function(state) {
+  const dialogue = await Dialogue.findOne({id : state.endgame});
+  return {
+    output: {
+      desc: dialogue.text,
+      endgame: true
+    }
+  }
 }

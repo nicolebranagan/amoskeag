@@ -30,7 +30,10 @@ function takeAction(id, res, action) {
         res.json({ message: 'No such user', success: false })
         return;
       }
-      return action(user);
+      if (user.endgame !== -1)
+        return game.endgame(user);
+      else
+        return action(user);
   })
   .then(
     function(out) {

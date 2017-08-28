@@ -42,7 +42,11 @@ const SaveSchema = new Schema({
     ],
     seen_convo: [
       {type: Number}
-    ]
+    ],
+    endgame: {
+      type: Number,
+      default: -1
+    }
   }
 });
 

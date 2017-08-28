@@ -21,6 +21,10 @@ const DialogueSchema = new Schema({
   parent: {
     type: Number
   },
+  endgame: {
+    type: Boolean,
+    required: true
+  },
   effect: [
     {
       command: {
