@@ -69,6 +69,12 @@ class Game():
       )
     if ("get" in r):
       self.gets = r["get"]
+    if ("endgame" in r):
+      self.talks = []
+      self.exits = []
+      self.looks = []
+      self.gets = []
+      return r["desc"] + "\n\n **** GAME OVER ****"
     return r["desc"]
   
   def __say(self, data):

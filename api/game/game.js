@@ -179,10 +179,11 @@ exports.use = async function(state, id, on) {
 
 exports.endgame = async function(state) {
   const dialogue = await Dialogue.findOne({id : state.endgame});
+  const output = (await exports.status(state)).output;
+  output.desc = dialogue.text;
+  output.endgame = true;
+
   return {
-    output: {
-      desc: dialogue.text,
-      endgame: true
-    }
+    output: output
   }
 }
