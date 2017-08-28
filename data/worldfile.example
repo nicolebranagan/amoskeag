@@ -36,9 +36,7 @@
     {
       "name": "man2",
       "label": "a denizen of the void",
-      "desc": "",
       "carryable": false,
-      "use": ""
     },
     {
       "name": "void",
@@ -68,8 +66,7 @@
           "id": 1,
           "condition": {
             "command": "has",
-            "target": "void",
-            "value": ""
+            "target": "void"
           }
         },
         {
