@@ -124,17 +124,22 @@ async function load() {
       new_dialogue.children = dialogue.children.map(
         (e) => ({
           label: e.label,
-          guid: dialogue_ids[get_dialogue(e.id)]
+          guid: dialogue_ids[get_dialogue(e.id)],
+          condition: e.condition ? {
+            command : e.condition.command,
+            target: npc_ids[e.condition.target],
+            value: e.condition.value
+          } : undefined
         })
       )
-    if (dialogue.effect) {
+    if (dialogue.effect)
       new_dialogue.effect = dialogue.effect.map(
         (e) => ({
           command: e.command,
           target: npc_ids[e.target],
           value: e.value
         }))
-    }
+
     await new_dialogue.save();
   }
 }

@@ -114,12 +114,13 @@ exports.talk = async function(state, id) {
 
   let talk = [];
   if (dialogue.children)
-    talk = dialogue.children.map(
-      e => ({
-        "label": e.label,
-        "id": e.guid
-      })
-    )
+    talk = dialogue.children
+      .filter( e => (!e.condition) || (condition(state, e.condition)))
+      .map(
+        e => ({
+          "label": e.label,
+          "id": e.guid
+        }))
   if (!state.seen_convo.includes(dialogue.id))
     state.seen_convo.push(dialogue.id);
   return {

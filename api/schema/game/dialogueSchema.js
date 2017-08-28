@@ -44,6 +44,17 @@ const DialogueSchema = new Schema({
       guid: {
         type: String,
         required: true
+      },
+      condition: {
+        command: {
+          type: String
+        },
+        target: {
+          type: Number
+        },
+        value: {
+          type: String
+        }
       }
     }
   ]
