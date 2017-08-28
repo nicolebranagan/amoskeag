@@ -6,7 +6,7 @@ const uuidv4 = require('uuid/v4');
 const game = require('../game/game');
 
 async function getUser(id) {
-  const user = await Save.findOne({id: id});
+  const user = await Save.findOne({id: id.toString()});
   if (user == null)
     throw "No such user."
   return user.state;
@@ -75,7 +75,7 @@ exports.look_at = function(req, res) {
     );
   else
     takeAction(req.user.save, res,
-      (state) => game.look_at(state, req.body.id)
+      (state) => game.look_at(state, req.body.id.toString())
     )
 }
 
@@ -89,7 +89,7 @@ exports.move = function(req, res) {
     );
   else
     takeAction(req.user.save, res,
-      (state) => game.move(state, req.body.id)
+      (state) => game.move(state, req.body.id.toString())
     )
 }
 
@@ -103,7 +103,7 @@ exports.talk = function(req, res) {
     );
   else
     takeAction(req.user.save, res,
-      (state) => game.talk(state, req.body.id)
+      (state) => game.talk(state, req.body.id.toString())
     )
 }
 
@@ -117,12 +117,12 @@ exports.get = function(req, res) {
     );
   else
     takeAction(req.user.save, res,
-      (state) => game.get(state, req.body.id)
+      (state) => game.get(state, req.body.id.toString())
     )
 }
 
 exports.use = function(req, res) {
-  if (!req.body.id && !req.body.target)
+  if (!req.body.id)
     res.status(422).json(
       {
         message: "What are you using, and on what?",
@@ -131,6 +131,6 @@ exports.use = function(req, res) {
     );
   else
     takeAction(req.user.save, res,
-      (state) => game.use(state, req.body.id, req.body.target)
+      (state) => game.use(state, req.body.id.toString(), req.body.target ? req.body.target.toString() : null)
     )
 }
