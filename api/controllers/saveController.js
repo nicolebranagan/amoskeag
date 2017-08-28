@@ -33,9 +33,8 @@ exports.delete_all = function(req, res) {
 };
 
 exports.read = function(req, res) {
-  Save.findOneAndUpdate(
+  Save.findOne(
     {id: req.params.userId},
-    {last_date: Date.now()}, 
     function(err, save) {
       if (err) {
         res.json({message: err.toString(), success: false})

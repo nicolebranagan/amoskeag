@@ -40,8 +40,8 @@ exports.get_anonymous_token = function(req, res) {
 exports.get_token = function(req, res) {  
   if (!(req.body.username && req.body.password))
     res.status(401).json({success: false});
-  const name = req.body.username;
-  const password = req.body.password;
+  const name = req.body.username.toString();
+  const password = req.body.password.toString();
   let user;
   User.findOne({name: name})
   .then(
@@ -122,8 +122,8 @@ exports.create = function(req, res) {
       message: "Please provide a username and password",
       success: false
     });
-  const name = req.body.username;
-  const password = req.body.password;
+  const name = req.body.username.toString();
+  const password = req.body.password.toString();
   const save_id = uuidv4();
   new_game(save_id);
   bcrypt.hash(password, cfg.bcrypt.rounds)
