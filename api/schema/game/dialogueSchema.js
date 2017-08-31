@@ -34,6 +34,9 @@ const DialogueSchema = new Schema({
       target: {
         type: Number
       },
+      location: {
+        type: Number
+      },
       value: {
         type: String
       }

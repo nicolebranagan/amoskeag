@@ -57,10 +57,21 @@ class Game():
     raise IOError(str(r))
 
   def __update(self, r):
-    if ("talk" in r):
-      self.talks = r["talk"]
+    out = r["desc"]
     if ("exit" in r):
       self.exits = r["exit"]
+      if (len(self.exits) != 0):
+        out = out + "\n\nExits are " + ','.join([e["label"] for e in self.exits])
+
+    if ("talk" in r):
+      self.talks = r["talk"]
+      if (len(self.talks) != 0):
+        say = []
+        opt = 'abcdefghijklmnopqr'
+        for idx, e in enumerate(r["talk"]):
+          e["say"] = e["label"]
+          e["label"] = opt[idx]
+
     if ("look" in r):
       self.looks = r["look"]
       self.looks.extend(
@@ -75,7 +86,7 @@ class Game():
       self.looks = []
       self.gets = []
       return r["desc"] + "\n\n **** GAME OVER ****"
-    return r["desc"]
+    return out
   
   def __say(self, data):
     labels = [e["label"] for e in data]
@@ -96,7 +107,14 @@ class Game():
     return self.__update(r)
   
   def talk(self):
-    return self.__say(self.talks)
+    out = ""
+    if (len(self.talks) != 0):
+      say = []
+      opt = 'abcdefghijklmnopqr'
+      for idx, e in enumerate(self.talks):
+        say.append(opt[idx] + ") " + e["say"])
+      out = '\n'.join(say)
+    return out
   
   def lookat(self):
     return self.__say(self.looks)
@@ -108,10 +126,16 @@ class Game():
     return self.__say(self.exits)
 
   def talk_to(self, to):
-    return self.__gopost(self.talks, to, "talk")
+    out = self.__gopost(self.talks, to, "talk")
+    if (len(self.talks) != 0):
+      out = out + "\n\n" + self.talk()
+    return out
   
   def lookat_to(self, to):
-    return self.__gopost(self.looks, to, "look")
+    out = self.__gopost(self.looks, to, "look")
+    if (len(self.talks) != 0):
+      out = out + "\n\n" + self.talk()
+    return out
 
   def get_to(self, to):
     out = self.__gopost(self.gets, to, "get")

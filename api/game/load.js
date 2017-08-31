@@ -138,9 +138,9 @@ async function load() {
         (e) => ({
           command: e.command,
           target: npc_ids[e.target],
+          location: room_ids[e.location],
           value: e.value
         }))
-
     await new_dialogue.save();
   }
 }
