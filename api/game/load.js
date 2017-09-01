@@ -24,6 +24,7 @@ async function load() {
     const new_room = new Room ({
       id: index,
       guid: guid,
+      title: room.title,
       desc: room.desc,
       exits: room.exits.map(
         (e) => ({

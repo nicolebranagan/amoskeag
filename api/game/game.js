@@ -43,6 +43,7 @@ async function view(state, room) {
       })
     )
     return { 
+        title: room.title,
         desc: room.desc + helper.npcString(npcdata.map(e => e.label)),
         exit: exits
                 .map(e => ({label: e.label, id: e.guid})),

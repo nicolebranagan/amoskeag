@@ -78,14 +78,19 @@ class Game():
         ({"label" : e["label"],
           "id" : e["look"]} for e in self.inventory)
       )
+
     if ("get" in r):
       self.gets = r["get"]
+
     if ("endgame" in r):
       self.talks = []
       self.exits = []
       self.looks = []
       self.gets = []
       return r["desc"] + "\n\n **** GAME OVER ****"
+
+    if ("title" in r):
+      out = r["title"] + "\n\n" + out
     return out
   
   def __say(self, data):

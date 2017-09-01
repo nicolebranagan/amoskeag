@@ -10,6 +10,9 @@ const RoomSchema = new Schema({
   guid: {
     type: String
   },
+  title: {
+    type: String
+  },
   desc: {
     type: String
   },
