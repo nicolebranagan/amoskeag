@@ -74,6 +74,7 @@ async function load() {
         guid: uuidv4(),
         desc: dialogue_ids[get_dialogue(npc.desc)],
         dialogue: dialogue_ids[get_dialogue(npc.dialogue)],
+        listable: npc.listable,
         initial: {
           label: npc.label,
           room: room_ids[npc.room],

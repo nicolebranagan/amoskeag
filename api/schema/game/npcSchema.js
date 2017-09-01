@@ -17,6 +17,10 @@ const NpcSchema = new Schema({
   dialogue: {
     type: String
   },
+  listable: {
+    type: Boolean,
+    default: true
+  },
   use: [
     {
       target: {

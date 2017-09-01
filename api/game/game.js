@@ -36,6 +36,7 @@ async function view(state, room) {
     .map(
       e => ({
         label: state.npc[e.id].label,
+        listable: e.listable,
         carryable: state.npc[e.id].carryable,
         guid: e.guid,
         dialogue: e.dialogue,
@@ -44,7 +45,7 @@ async function view(state, room) {
     )
     return { 
         title: room.title,
-        desc: room.desc + helper.npcString(npcdata.map(e => e.label)),
+        desc: room.desc + helper.npcString(npcdata.filter(e => e.listable).map(e => e.label)),
         exit: exits
                 .map(e => ({label: e.label, id: e.guid})),
         look: npcdata
