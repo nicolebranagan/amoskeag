@@ -47,7 +47,16 @@ const SaveSchema = new Schema({
       type: Number,
       default: -1
     }
-  }
+  },
+  saves: [{
+    state: {},
+    name: {
+      type: String,
+    },
+    guid: {
+      type: String
+    }
+  }]
 });
 
 module.exports = mongoose.model('Saves', SaveSchema);

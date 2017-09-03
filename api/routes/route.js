@@ -58,6 +58,16 @@ module.exports = function(app) {
   app.route('/game/use')
     .post(gameController.use)
 
+  app.route('/game/save')
+    .get(gameController.save)
+    .post(gameController.save)
+
+  app.route('/game/saves')
+    .get(gameController.saves)
+
+  app.route('/game/load')
+    .post(gameController.load)
+
   app.all('*', function(req, res) {
     res.status(404).json({
       message: "Bad command or file name.",

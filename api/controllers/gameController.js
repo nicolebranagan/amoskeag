@@ -5,6 +5,17 @@ const mongoose = require('mongoose'),
 const uuidv4 = require('uuid/v4');
 const game = require('../game/game');
 
+function copyState(input) {
+  if (!(input instanceof Array || input instanceof Object))
+    return input;
+  const output = input instanceof Array ? [] : {};
+  for (const key in input) {
+    if (key !== '_id')
+      output[key] = copyState(input[key])
+  }
+  return output;
+}
+
 async function getUser(id) {
   const user = await Save.findOne({id: id.toString()});
   if (user == null)
@@ -133,4 +144,106 @@ exports.use = function(req, res) {
     takeAction(req.user.save, res,
       (state) => game.use(state, req.body.id.toString(), req.body.target ? req.body.target.toString() : null)
     )
+}
+
+exports.save = function(req, res) {
+  const guid = uuidv4();
+  Save.findOne({id: req.user.save}).then(
+    function(user) {
+      if (user == null) {
+        res.json({ message: 'No such user', success: false })
+        return;
+      }
+      const newstate = copyState(user.state.toObject());
+      const name = req.body.name ? req.body.name : ("Save #" + user.saves.length.toString());
+      user.saves.push(
+        {
+          guid: guid,
+          state: newstate,
+          name: name
+        }
+      )
+      return user.save();
+  })
+  .then(
+    function() {
+      res.json({
+        output: {id: guid},
+        success: true
+      })
+  })
+  .catch(
+    function(err) {
+      console.log(err)
+      res.status(500).json({ message: err.toString(), success: false });
+    }
+  );
+}
+
+exports.saves = function(req, res) {
+  Save.findOne({id: req.user.save}).lean().then(
+    function(user) {
+      if (user == null) {
+        res.json({ message: 'No such user', success: false })
+        return;
+      }
+      console.log(user)
+      const saves = user.saves.map(
+        e => ({
+          name: e.name,
+          id: e.guid
+        })
+      )
+      res.json(
+        {
+          output: {
+            saves: saves
+          },
+          success: true
+        }
+      )
+  })
+  .catch(
+    function(err) {
+      res.status(500).json({ message: err.toString(), success: false });
+    }
+  );
+}
+
+exports.load = function(req, res) {
+  if (!req.body.id)
+    res.status(422).json(
+      {
+        message: "No such save.",
+        success: false,
+      }
+    );
+  const guid = req.body.id;
+  Save.findOne({id: req.user.save}).then(
+    function(user) {
+      if (user == null) {
+        res.json({ message: 'No such user', success: false })
+        return;
+      }
+      const save = user.saves.find(e => e.guid == guid);
+      if (!save)
+        throw "No such save"
+      const newstate = copyState(save.state);
+      user.state = newstate;
+      return user.save();
+  })
+  .then(
+    function() {
+      res.json({
+        output: {},
+        success: true
+      })
+  })
+  .catch(
+    function(err) {
+      console.log(err)
+      res.status(500).json({ message: err.toString(), success: false });
+    }
+  );
+
 }

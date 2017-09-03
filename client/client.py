@@ -168,6 +168,15 @@ class Game():
     self.inventory = r["inventory"]
     return "Inventory: " + ", ".join([e["label"] for e in r["inventory"]])
 
+  def save(self):
+    return str(self._get('/game/save'))
+
+  def saves(self):
+    return str(self._get('/game/saves'))
+
+  def load(self, guid):
+    return str(self._post('/game/load', {"id": guid}))
+
 cond = True
 game = Game(get_token())
 time.sleep(0.5)
@@ -187,6 +196,12 @@ while(cond):
       print(game.move())
     elif (text == "get"):
       print(game.get())
+    elif (text == "save"):
+      print(game.save())
+    elif (text == "saves"):
+      print(game.saves())
+    elif (text.startswith("load ")):
+      print(game.load(text[5:]))
     elif (text.startswith("look ")):
       print(game.lookat_to(text[5:]))
     elif (text.startswith("talk ")):
