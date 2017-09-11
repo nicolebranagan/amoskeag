@@ -245,5 +245,4 @@ exports.load = function(req, res) {
       res.status(500).json({ message: err.toString(), success: false });
     }
   );
-
 }

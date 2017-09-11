@@ -37,8 +37,15 @@ module.exports = function(app) {
     .get(saveController.read)
     .delete(saveController.delete);
 
-  app.use('/game/*', auth.authenticate());
+  app.options("/game/*", function(req, res, next){
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    res.send(200);
+  });
 
+  app.use('/game/*', auth.authenticate());
+  
   app.route('/game/look')
     .get(gameController.look)
     .post(gameController.look_at)
