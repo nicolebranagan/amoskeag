@@ -7,6 +7,11 @@ const mongoose = require('mongoose'),
 const helper = require("./helper");
 const effect = require("./effect.js")
 const condition = require("./condition.js")
+let config = {};
+
+exports.setConfig = function(conf) {
+  config = conf;
+}
 
 exports.initialState = async function() {
   const npcdata = await Npc.find({});
@@ -22,6 +27,7 @@ exports.initialState = async function() {
     )
   }
   return {
+    player: {desc: config.defaults ? config.defaults.self : undefined},
     npc: npc
   }
 }
@@ -43,6 +49,7 @@ async function view(state, room) {
         desc: e.desc
       })
     )
+
     return { 
         title: room.title,
         desc: room.desc + helper.npcString(npcdata.filter(e => e.listable).map(e => e.label)),
@@ -140,6 +147,7 @@ exports.status = async function(state) {
   const npcdata = (await Npc.find({id: {$in: state.player.inventory}}))
   return { 
     output: {
+      desc: state.player.desc,
       inventory: npcdata
               .map(e => ({label: state.npc[e.id].label, look: e.guid})),
     }

@@ -109,5 +109,12 @@
       "name": "look-void",
       "text": "The void looks back at you, confused."
     }
-  ]
+  ],
+  "config": {
+    "name": "example game",
+    "author": "Nicole",
+    "defaults" : {
+      "self" : "A sentient being."
+    }
+  }
 }

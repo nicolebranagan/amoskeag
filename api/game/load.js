@@ -6,11 +6,14 @@ const mongoose = require('mongoose'),
   Room = mongoose.model('Rooms'),
   Dialogue = mongoose.model('Dialogues'),
   Npc = mongoose.model('Npcs');
+const game = require('./game');
 
 async function load() {
   await Room.remove({});
   await Dialogue.remove({});
   await Npc.remove({});
+
+  game.setConfig(worldfile.config);
 
   const room_guids = [];
   const room_ids = {};
