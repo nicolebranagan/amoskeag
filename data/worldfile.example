@@ -36,7 +36,7 @@
     {
       "name": "man2",
       "label": "a denizen of the void",
-      "carryable": false,
+      "carryable": false
     },
     {
       "name": "void",

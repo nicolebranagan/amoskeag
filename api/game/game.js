@@ -53,6 +53,7 @@ async function view(state, room) {
     return { 
         title: room.title,
         desc: room.desc + helper.npcString(npcdata.filter(e => e.listable).map(e => e.label)),
+        img: room.img ? config.image_root + room.img : undefined,
         exit: exits
                 .map(e => ({label: e.label, id: e.guid})),
         look: npcdata

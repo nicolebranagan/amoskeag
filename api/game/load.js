@@ -23,12 +23,13 @@ async function load() {
     const room = worldfile.rooms[index];
     room_guids[index] = guid;
     room_ids[room.name] = index;
-
+    
     const new_room = new Room ({
       id: index,
       guid: guid,
       title: room.title,
       desc: room.desc,
+      img: room.img,
       exits: room.exits.map(
         (e) => ({
           guid: uuidv4(),

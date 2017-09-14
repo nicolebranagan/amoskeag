@@ -16,6 +16,9 @@ const RoomSchema = new Schema({
   desc: {
     type: String
   },
+  img: {
+    type: String
+  },
   exits: [
     {
       guid: {
